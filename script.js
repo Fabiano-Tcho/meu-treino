@@ -2,74 +2,226 @@ function mostrarTreino(titulo, exercicios) {
     
     let listaExercicios = "";
     
-    for (let exercicio of exercicios) {
+    for (let i = 0; i < exercicios.length; i++) {
+        const exercicio = exercicios[i];
+        
         listaExercicios += `
-            <li>
-                ${exercicio.nome}
-                - ${exercicio.series} séries
-                - ${exercicio.repeticoes} repetições
-            </li>
+            <div class="cartao-exercicio">
+
+                <h3>${exercicio.nome}</h3>
+           
+                <p>${exercicio.series} séries</p>
+
+                <p>${exercicio.repeticoes} repetições</p>
+
+                <p>Séries Realizadas: ${exercicio.seriesRealizadas}/${exercicio.series}</p>
+
+                <p>Carga Atual: ${exercicio.cargaAtual} kg</p>
+
+                <p>Descanso: ${exercicio.descanso} segundos</p>
+
+                <button class="btn-descanso">Iniciar Descanso</button>
+            
+                <button
+                    class="btn-concluirSerie" data-indice="${i}">Concluir Série
+                </button>
+
+            
+            </div>
+
         `;
     }
+
+    
 
     conteudoTreino.innerHTML = `
         <h2>${titulo}</h2>
         
-        <ul>
-            ${listaExercicios}
+        ${listaExercicios}
         
-        </ul>
     `;
 
+    const botoesConcluir = document.querySelectorAll(".btn-concluirSerie");
+    
+    for (let botao of botoesConcluir) {
+        botao.addEventListener("click", function() {
+            console.log(botao.dataset.indice);
+        });
+
+}
 }
 
 const treinoA = [
     {
-        nome: "Supino Reto",
+        nome: "Supino Reto  (Máquina ou Halteres)",
         series: 3,
-        repeticoes: "10-12"
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
     },
     
     {   
-        nome: "Supino Inclinado",
+        nome: "Supino Inclinado com Halteres",
         series: 3,
-        repeticoes: "10-12"
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
     },
 
     {
-        nome: "Desenvolvimento de Ombros",
+        nome: "Desenvolvimento de Ombros (Máquina ou Halteres)",
         series: 3,
-        repeticoes: "10-12"
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
     },
 
     {
-        nome: "Elevação Lateral",
+        nome: "Elevação Lateral com Halteres",
         series: 3,
-        repeticoes: "12-15"
+        repeticoes: "12-15",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
     },
 
     {
-        nome: "Tríceps na Polia",
+        nome: "Tríceps na Polia (Barra Reta ou Corda)",
         series: 3,
-        repeticoes: "10-12"
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
     }
 ];
 
 const treinoB = [
-    "Puxada Alta na Polia",
-    "Remada Baixa na Polia",
-    "Remada Alta",
-    "Rosca Direta",
-    "Rosca Martelo"
+    {
+        nome: "Puxada Alta na Polia (Pegada Pronada)",
+        series: 3,
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Remada Baixa na Polia (Pegada Neutra)",
+        series: 3,
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Remada Alta na Polia ou Halteres",
+        series: 3,
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Rosca Direta na Polia ou Halteres",
+        series: 3,
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Rosca Martelo com Halteres",
+        series: 3,
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    }
 ];
 
 const treinoC = [
-    "Leg Press 45º",
-    "Cadeira Extensora",
-    "Cadeira Flexora",
-    "Panturrilha em Pé",
-    "Abdominal Infra",
-    "Prancha Isométrica"
+    {
+        nome: "Leg Press 45º",
+        series: 3,
+        repeticoes: "10-12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Cadeira Extensora",
+        series: 3,
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Cadeira Flexora ou Mesa Flexora",
+        series: 3,
+        repeticoes: "12",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Panturrilha em Pé",
+        series: 4,
+        repeticoes: "15",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Abdominal Infra (Elevação no Solo)",
+        series: 3,
+        repeticoes: "15",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    },
+    {
+        nome: "Prancha Isométrica",
+        series: 3,
+        repeticoes: "30-45 segundos",
+        seriesRealizadas: 0,
+        cargaAtual: "",
+        descanso: 60,
+        gif: "",
+        video: ""
+    }
 ];
 
 
