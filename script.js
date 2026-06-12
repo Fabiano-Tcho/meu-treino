@@ -4,11 +4,12 @@ function mostrarTreino(titulo, exercicios) {
     
     for (let i = 0; i < exercicios.length; i++) {
         const exercicio = exercicios[i];
+        const concluido = exercicio.seriesRealizadas === exercicio.series;
         
         listaExercicios += `
             <div class="cartao-exercicio">
 
-                <h3>${exercicio.nome}</h3>
+                <h3>${concluido ? "✅ " : ""}${exercicio.nome}</h3>
            
                 <p>${exercicio.series} séries</p>
 
@@ -32,8 +33,6 @@ function mostrarTreino(titulo, exercicios) {
         `;
     }
 
-    
-
     conteudoTreino.innerHTML = `
         <h2>${titulo}</h2>
         
@@ -45,7 +44,16 @@ function mostrarTreino(titulo, exercicios) {
     
     for (let botao of botoesConcluir) {
         botao.addEventListener("click", function() {
-            console.log(botao.dataset.indice);
+            const indice = Number(botao.dataset.indice);
+            if (
+                exercicios[indice].seriesRealizadas < exercicios[indice].series            
+            ) {            
+                
+                exercicios[indice].seriesRealizadas++;
+            }
+
+            mostrarTreino(tituloAtual, treinoAtual);
+            console.log(exercicios[indice]);
         });
 
 }
@@ -236,15 +244,20 @@ console.log(botaoTreinoB);
 console.log(botaoTreinoC);
 
 botaoTreinoA.addEventListener("click", function() {
+    tituloAtual = "Treino A";
+    treinoAtual = treinoA;
     mostrarTreino("Treino A", treinoA);
     
 });
 
 botaoTreinoB.addEventListener("click", function() {
+    tituloAtual = "Treino B";
+    treinoAtual = treinoB;
     mostrarTreino("Treino B", treinoB);
 });
 
 botaoTreinoC.addEventListener("click", function() {
+    tituloAtual = "Treino C";
+    treinoAtual = treinoC;
     mostrarTreino("Treino C", treinoC);
-
 });
