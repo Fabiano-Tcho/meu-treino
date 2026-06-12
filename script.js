@@ -7,7 +7,7 @@ function mostrarTreino(titulo, exercicios) {
         const concluido = exercicio.seriesRealizadas === exercicio.series;
         
         listaExercicios += `
-            <div class="cartao-exercicio">
+            <div class="cartao-exercicio ${concluido ? "cartao-concluido" : ""}">
 
                 <h3>${concluido ? "✅ " : ""}${exercicio.nome}</h3>
            
@@ -24,9 +24,11 @@ function mostrarTreino(titulo, exercicios) {
                 <button class="btn-descanso">Iniciar Descanso</button>
             
                 <button
-                    class="btn-concluirSerie" data-indice="${i}">Concluir Série
+                    class="btn-concluirSerie"
+                    data-indice=" ${i}"
+                    ${concluido ? "disabled" : ""}>
+                    Concluir Série
                 </button>
-
             
             </div>
 
@@ -238,6 +240,9 @@ const botaoTreinoB = document.getElementById("btnTreinoB");
 const botaoTreinoC = document.getElementById("btnTreinoC");
 
 const conteudoTreino = document.getElementById("conteudoTreino");
+
+let tituloAtual = "";
+let treinoAtual = [];
 
 console.log(botaoTreinoA);
 console.log(botaoTreinoB);

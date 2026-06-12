@@ -25,6 +25,11 @@ h3 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.cartao-concluido {
+    border-left: 4px solid #4caf50;
+    background-color: rgba(76, 175, 80, 0.10);
+}
+
 button {
     padding: 10px 20px;
     margin: 5px;
@@ -34,6 +39,8 @@ button {
     font-size: 16px;
 }
 
-.descanso {
-    
+.descanso-ativo {
+    font-sdize: 24px;
+    font-weight: bold;
+    color: rgba(255, 0, 0, 0.7);;    
 }
