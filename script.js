@@ -19,9 +19,15 @@ function mostrarTreino(titulo, exercicios) {
 
                 <p>Carga Atual: ${exercicio.cargaAtual} kg</p>
 
-                <p>Descanso: ${exercicio.descanso} segundos</p>
+                <p class="tempo-descanso">
+                    Descanso: ${exercicio.descanso} segundos
+                </p>
 
-                <button class="btn-descanso">Iniciar Descanso</button>
+                <button
+                    class="btn-descanso"
+                    data-indice="${i}">
+                    Iniciar Descanso
+                </button>
             
                 <button
                     class="btn-concluirSerie"
@@ -29,6 +35,8 @@ function mostrarTreino(titulo, exercicios) {
                     ${concluido ? "disabled" : ""}>
                     Concluir Série
                 </button>
+
+                
             
             </div>
 
@@ -41,6 +49,42 @@ function mostrarTreino(titulo, exercicios) {
         ${listaExercicios}
         
     `;
+
+    const botoesDescanso = document.querySelectorAll(".btn-descanso");
+    for (let botao of botoesDescanso) {
+        botao.addEventListener("click", function() {
+            const indice = Number(botao.dataset.indice);
+            const exercicio = exercicios[indice];
+            if (exercicio.cronometro) {
+                clearInterval(exercicio.cronometro);
+            }
+            let tempo = exercicio.descanso;
+            const cartao = botao.closest(".cartao-exercicio");
+            const textoDescanso =
+                cartao.querySelector(".tempo-descanso");
+            
+            exercicio.cronometro = setInterval(function() {
+                tempo--;
+
+                textoDescanso.textContent =
+                    `Descanso: ${tempo} segundos`;
+                
+                if (tempo <= 10) {
+                    textoDescanso.classList.add("tempo-alerta");
+                }
+                
+                if (tempo === 0) {
+                    clearInterval(exercicio.cronometro);
+
+                    textoDescanso.textContent =
+                        `Descanso: ${exercicio.descanso} segundos`;
+                    
+                    textoDescanso.classList.remove("tempo-alerta");
+                }
+                
+            }, 1000);
+        });
+    }
 
     const botoesConcluir = document.querySelectorAll(".btn-concluirSerie");
     
@@ -70,7 +114,8 @@ const treinoA = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     
     {   
@@ -81,7 +126,8 @@ const treinoA = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
 
     {
@@ -92,7 +138,8 @@ const treinoA = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
 
     {
@@ -103,7 +150,8 @@ const treinoA = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
 
     {
@@ -114,7 +162,8 @@ const treinoA = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     }
 ];
 
@@ -127,7 +176,8 @@ const treinoB = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Remada Baixa na Polia (Pegada Neutra)",
@@ -137,7 +187,8 @@ const treinoB = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Remada Alta na Polia ou Halteres",
@@ -147,7 +198,8 @@ const treinoB = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Rosca Direta na Polia ou Halteres",
@@ -157,7 +209,8 @@ const treinoB = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Rosca Martelo com Halteres",
@@ -167,7 +220,8 @@ const treinoB = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     }
 ];
 
@@ -180,7 +234,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Cadeira Extensora",
@@ -190,7 +245,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Cadeira Flexora ou Mesa Flexora",
@@ -200,7 +256,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Panturrilha em Pé",
@@ -210,7 +267,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Abdominal Infra (Elevação no Solo)",
@@ -220,7 +278,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     },
     {
         nome: "Prancha Isométrica",
@@ -230,7 +289,8 @@ const treinoC = [
         cargaAtual: "",
         descanso: 60,
         gif: "",
-        video: ""
+        video: "",
+        cronometro: null
     }
 ];
 
