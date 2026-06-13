@@ -43,8 +43,38 @@ function mostrarTreino(titulo, exercicios) {
         `;
     }
 
+    let concluidos = 0;
+
+    for (let exercicio of exercicios) {
+
+        if (
+            exercicio.seriesRealizadas === exercicio.series
+    ) {
+            concluidos++;
+        
+        }
+    }
+
+    const porcentagem = Math.round(
+        (concluidos / exercicios.length) * 100
+    );
+
     conteudoTreino.innerHTML = `
         <h2>${titulo}</h2>
+
+        <div class="barra-progresso">
+            <div
+                class="barra-preenchida"
+                style="width: ${porcentagem}%">
+            </div>
+        </div>
+
+        <p>${porcentagem}%</p>
+
+        <p>
+            ${concluidos} de ${exercicios.length}
+            exercícios concluídos
+        </p>
         
         ${listaExercicios}
         
