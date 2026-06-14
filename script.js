@@ -77,6 +77,10 @@ function mostrarTreino(titulo, exercicios) {
         </p>
         
         ${listaExercicios}
+
+        <button id="btnFinalizarTreino">
+            Finalizar Treino
+        </button>
         
     `;
 
@@ -126,14 +130,48 @@ function mostrarTreino(titulo, exercicios) {
             ) {            
                 
                 exercicios[indice].seriesRealizadas++;
+                localStorage.setItem(
+                    chaveTreinoAtual,
+                    JSON.stringify(treinoAtual)
+                );
             }
 
             mostrarTreino(tituloAtual, treinoAtual);
             console.log(exercicios[indice]);
         });
 
+    }
 }
-}
+
+    function finalizarTreino() {
+
+        const confirmar = confirm(
+            "Deseja finalizar o treino?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        console.log("Antes:", treinoAtual);
+
+        for (let exercicio of treinoAtual) {
+            exercicio.seriesRealizadas = 0;
+        }
+
+        console.log("Depois:", treinoAtual);
+
+        localStorage.setItem(
+            chaveTreinoAtual,
+            JSON.stringify(treinoAtual)
+        );
+
+        mostrarTreino(
+            tituloAtual,
+            treinoAtual
+        );
+    }
+    
 
 const treinoA = [
     {
@@ -197,6 +235,15 @@ const treinoA = [
     }
 ];
 
+const treinoASalvo = localStorage.getItem("treinoA");
+
+if (treinoASalvo) {
+    Object.assign(
+        treinoA,
+        JSON.parse(treinoASalvo)
+    );
+}
+
 const treinoB = [
     {
         nome: "Puxada Alta na Polia (Pegada Pronada)",
@@ -254,6 +301,15 @@ const treinoB = [
         cronometro: null
     }
 ];
+
+const treinoBSalvo = localStorage.getItem("treinoB");
+
+if (treinoBSalvo) {
+    Object.assign(
+        treinoB,
+        JSON.parse(treinoBSalvo)
+    );
+}
 
 const treinoC = [
     {
@@ -324,6 +380,13 @@ const treinoC = [
     }
 ];
 
+const treinoCSalvo = localStorage.getItem("treinoC");
+if (treinoCSalvo) {
+    Object.assign(
+        treinoC,
+        JSON.parse(treinoCSalvo)
+    );
+}
 
 const botaoTreinoA = document.getElementById("btnTreinoA");
 const botaoTreinoB = document.getElementById("btnTreinoB");
@@ -333,6 +396,7 @@ const conteudoTreino = document.getElementById("conteudoTreino");
 
 let tituloAtual = "";
 let treinoAtual = [];
+let chaveTreinoAtual = "";
 
 console.log(botaoTreinoA);
 console.log(botaoTreinoB);
@@ -341,6 +405,7 @@ console.log(botaoTreinoC);
 botaoTreinoA.addEventListener("click", function() {
     tituloAtual = "Treino A";
     treinoAtual = treinoA;
+    chaveTreinoAtual = "treinoA";
     mostrarTreino("Treino A", treinoA);
     
 });
@@ -348,11 +413,13 @@ botaoTreinoA.addEventListener("click", function() {
 botaoTreinoB.addEventListener("click", function() {
     tituloAtual = "Treino B";
     treinoAtual = treinoB;
+    chaveTreinoAtual = "treinoB";
     mostrarTreino("Treino B", treinoB);
 });
 
 botaoTreinoC.addEventListener("click", function() {
     tituloAtual = "Treino C";
     treinoAtual = treinoC;
+    chaveTreinoAtual = "treinoC";
     mostrarTreino("Treino C", treinoC);
 });
