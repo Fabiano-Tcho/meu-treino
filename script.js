@@ -44,8 +44,14 @@ function mostrarTreino(titulo, exercicios) {
     }
 
     let concluidos = 0;
+    let totalSeries = 0;
+    let seriesRealizadas = 0;
 
     for (let exercicio of exercicios) {
+
+        totalSeries += exercicio.series;
+
+        seriesRealizadas += exercicio.seriesRealizadas;
 
         if (
             exercicio.seriesRealizadas === exercicio.series
@@ -56,7 +62,7 @@ function mostrarTreino(titulo, exercicios) {
     }
 
     const porcentagem = Math.round(
-        (concluidos / exercicios.length) * 100
+        (seriesRealizadas / totalSeries) * 100
     );
 
     conteudoTreino.innerHTML = `
@@ -69,13 +75,18 @@ function mostrarTreino(titulo, exercicios) {
             </div>
         </div>
 
-        <p>${porcentagem}%</p>
+        <p>${porcentagem}% Total</p>
 
+        <p>
+            ${seriesRealizadas} de ${totalSeries}
+            séries realizadas
+        </p>
+        
         <p>
             ${concluidos} de ${exercicios.length}
             exercícios concluídos
         </p>
-        
+
         ${listaExercicios}
 
         <button id="btnFinalizarTreino">

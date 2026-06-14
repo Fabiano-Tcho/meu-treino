@@ -78,3 +78,7 @@ button {
         transform: scale(1);
     }
 }
+
+.oculto {
+    display: none;
+}
