@@ -100,6 +100,10 @@ function mostrarTreino(titulo, exercicios) {
         botao.addEventListener("click", function() {
             const indice = Number(botao.dataset.indice);
             const exercicio = exercicios[indice];
+
+            console.log(exercicio);
+            console.log("Descanso:", exercicio.descanso)
+
             if (exercicio.cronometro) {
                 clearInterval(exercicio.cronometro);
             }
@@ -109,25 +113,33 @@ function mostrarTreino(titulo, exercicios) {
                 cartao.querySelector(".tempo-descanso");
             
             exercicio.cronometro = setInterval(function() {
-                tempo--;
+
+            console.log("Tempo:", tempo);
+
+            if (tempo <= 0) {
+
+                console.log("PAROU");
+
+                clearInterval(exercicio.cronometro);
 
                 textoDescanso.textContent =
-                    `Descanso: ${tempo} segundos`;
-                
-                if (tempo <= 10) {
-                    textoDescanso.classList.add("tempo-alerta");
-                }
-                
-                if (tempo === 0) {
-                    clearInterval(exercicio.cronometro);
+                    `Descanso: ${exercicio.descanso} segundos`;
 
-                    textoDescanso.textContent =
-                        `Descanso: ${exercicio.descanso} segundos`;
-                    
-                    textoDescanso.classList.remove("tempo-alerta");
-                }
-                
-            }, 1000);
+                textoDescanso.classList.remove("tempo-alerta");
+
+                return;
+            }
+
+            tempo--;
+
+            textoDescanso.textContent =
+                `Descanso: ${tempo} segundos`;
+
+            if (tempo <= 10) {
+                textoDescanso.classList.add("tempo-alerta");
+            }
+
+        }, 1000);
         });
     }
 
@@ -404,6 +416,87 @@ const botaoTreinoB = document.getElementById("btnTreinoB");
 const botaoTreinoC = document.getElementById("btnTreinoC");
 
 const conteudoTreino = document.getElementById("conteudoTreino");
+
+const btnMostrarFormulario = document.getElementById("btnMostrarFormulario");
+const formularioExercicio = document.getElementById("formularioExercicio");
+const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
+
+btnMostrarFormulario.addEventListener("click", function() {
+    formularioExercicio.classList.remove("oculto");
+});
+
+btnCancelarExercicio.addEventListener("click", function() {
+    formularioExercicio.classList.add("oculto");
+});
+
+const btnSalvarExercicio = document.getElementById("btnSalvarExercicio");
+
+btnSalvarExercicio.addEventListener("click", function() {
+
+    const nome = document.getElementById("nomeExercicio").value;
+        if (!nome) {alert("Informe o nome do exercício.");
+            return;
+        }
+
+    const series = document.getElementById("seriesExercicio").value;
+        if (!series) {alert("Informe a quantidade de séries.");
+            return;
+        }
+
+    const repeticoes = document.getElementById("repeticoesExercicio").value;
+        if (!repeticoes) {alert("Informe as repetições.");
+            return;
+        }
+
+    const carga = document.getElementById("cargaExercicio").value;
+
+    const descanso = document.getElementById("descansoExercicio").value;
+        if(!descanso) {alert("Informe o tempo de descanso.");
+            return;
+        }
+
+    const gif = document.getElementById("gifExercicio").value;
+
+    const video = document.getElementById("videoExercicio").value;
+
+    console.log("Valor digitado:", descanso);
+
+    const novoExercicio = {
+        nome: nome,
+        series: Number(series),
+        repeticoes: repeticoes,
+        seriesRealizadas: 0,
+        cargaAtual: carga,
+        descanso: Number(descanso),
+        gif: gif,
+        video: video,
+        cronometro: null
+    };
+
+    console.log(nome);
+    console.log(series);
+    console.log(repeticoes);
+    console.log(carga);
+    console.log(descanso);
+    console.log(gif);
+    console.log(video);
+    console.log(novoExercicio);
+
+    treinoAtual.push(novoExercicio);
+
+    localStorage.setItem(
+        chaveTreinoAtual,
+        JSON.stringify(treinoAtual)
+    );
+
+    mostrarTreino(
+        tituloAtual,
+        treinoAtual
+    );
+});
+
+
+
 
 let tituloAtual = "";
 let treinoAtual = [];
