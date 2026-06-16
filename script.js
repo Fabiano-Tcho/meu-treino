@@ -500,6 +500,16 @@ if (treinoCSalvo) {
         treinoC,
         JSON.parse(treinoCSalvo)
     );
+
+const treinos = {
+    treinoA: treinoA,
+    treinoB: treinoB,
+    treinoC: treinoC
+
+};
+
+console.log(treinos);
+
 }
 
 const botaoTreinoA = document.getElementById("btnTreinoA");
