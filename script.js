@@ -36,7 +36,17 @@ function mostrarTreino(titulo, exercicios) {
                     Concluir Série
                 </button>
 
-                
+                <button
+                    class="btn-editarExercicio"
+                    data-indice="${i}">
+                    Editar Exercício
+                </button>
+
+                <button
+                    class="btn-excluirExercicio"
+                    data-indice="${i}">
+                    Excluir Exercício
+                </button>                
             
             </div>
 
@@ -64,6 +74,24 @@ function mostrarTreino(titulo, exercicios) {
     const porcentagem = Math.round(
         (seriesRealizadas / totalSeries) * 100
     );
+
+    console.log("Quantidade de exercícios:", exercicios.length);
+
+    if (exercicios.length === 0) {
+
+        conteudoTreino.innerHTML = `
+            <h2>${titulo}</h2>
+
+            <p>
+                Nenhum exercício cadastrado.
+            </p>
+
+            <p>
+                Clique em "+ Adicionar Exercício" para criar o primeiro exercício.
+            </p>
+        `;
+        return;
+    }
 
     conteudoTreino.innerHTML = `
         <h2>${titulo}</h2>
@@ -144,6 +172,69 @@ function mostrarTreino(titulo, exercicios) {
     }
 
     const botoesConcluir = document.querySelectorAll(".btn-concluirSerie");
+
+    const botoesEditar = document.querySelectorAll(".btn-editarExercicio");
+    console.log("Botões editar:", botoesEditar.length);
+
+    const botoesExcluir = document.querySelectorAll(".btn-excluirExercicio");
+
+    for (let botao of botoesExcluir) {
+        botao.addEventListener("click", function() {
+
+            const indice =
+                Number(botao.dataset.indice);
+            
+            const confirmar = confirm(
+                "Deseja excluir este exercício?"
+            );
+
+            if (!confirmar) {
+                return;
+            }
+
+            treinoAtual.splice(indice, 1);
+
+            localStorage.setItem(
+                chaveTreinoAtual,
+                JSON.stringify(treinoAtual)
+            );
+
+            mostrarTreino(
+                tituloAtual,
+                treinoAtual
+            );
+        });
+    }
+
+    for (let botao of botoesEditar) {
+
+        botao.addEventListener("click", function() {
+
+            const indice =
+                Number(botao.dataset.indice);
+            
+            const exercicio =
+                treinoAtual[indice];
+            
+            indiceEdicao = indice;
+
+            document.getElementById("nomeExercicio").value = exercicio.nome;
+
+            document.getElementById("seriesExercicio").value = exercicio.series;
+
+            document.getElementById("repeticoesExercicio").value = exercicio.repeticoes;
+
+            document.getElementById("cargaExercicio").value = exercicio.cargaAtual;
+
+            document.getElementById("descansoExercicio").value = exercicio.descanso;
+
+            document.getElementById("gifExercicio").value = exercicio.gif;
+
+            document.getElementById("videoExercicio").value = exercicio.video;
+
+            formularioExercicio.classList.remove("oculto");
+        });
+    }
     
     for (let botao of botoesConcluir) {
         botao.addEventListener("click", function() {
@@ -422,16 +513,35 @@ const formularioExercicio = document.getElementById("formularioExercicio");
 const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
 
 btnMostrarFormulario.addEventListener("click", function() {
+
+    if (!chaveTreinoAtual) {
+    alert(
+        "Selecione um treino antes de adicionar um exercício."
+    );
+    return;
+    }   
+
     formularioExercicio.classList.remove("oculto");
 });
 
 btnCancelarExercicio.addEventListener("click", function() {
+
+    indiceEdicao = null;
+
+    document.getElementById("nomeExercicio").value = "";
+    document.getElementById("seriesExercicio").value = "";
+    document.getElementById("repeticoesExercicio").value = "";
+    document.getElementById("cargaExercicio").value = "";
+    document.getElementById("descansoExercicio").value = "";
+    document.getElementById("gifExercicio").value = "";
+    document.getElementById("videoExercicio").value = "";
+
     formularioExercicio.classList.add("oculto");
 });
 
 const btnSalvarExercicio = document.getElementById("btnSalvarExercicio");
 
-btnSalvarExercicio.addEventListener("click", function() {
+btnSalvarExercicio.addEventListener("click", function() { 
 
     const nome = document.getElementById("nomeExercicio").value;
         if (!nome) {alert("Informe o nome do exercício.");
@@ -482,17 +592,44 @@ btnSalvarExercicio.addEventListener("click", function() {
     console.log(video);
     console.log(novoExercicio);
 
-    treinoAtual.push(novoExercicio);
+    if (indiceEdicao !== null) {
+        
+        treinoAtual[indiceEdicao] = novoExercicio;
+
+        indiceEdicao = null;
+    
+    } else {
+        treinoAtual.push(novoExercicio);
+
+    }
 
     localStorage.setItem(
         chaveTreinoAtual,
         JSON.stringify(treinoAtual)
-    );
+    );    
 
     mostrarTreino(
         tituloAtual,
         treinoAtual
     );
+
+    document.getElementById("nomeExercicio").value = "";
+
+    document.getElementById("seriesExercicio").value = "";
+
+    document.getElementById("repeticoesExercicio").value = "";
+
+    document.getElementById("cargaExercicio").value = "";
+
+    document.getElementById("descansoExercicio").value = "";
+
+    document.getElementById("gifExercicio").value = "";
+
+    document.getElementById("videoExercicio").value = "";
+
+    formularioExercicio.classList.add("oculto");
+
+
 });
 
 
@@ -501,6 +638,8 @@ btnSalvarExercicio.addEventListener("click", function() {
 let tituloAtual = "";
 let treinoAtual = [];
 let chaveTreinoAtual = "";
+
+let indiceEdicao = null;
 
 console.log(botaoTreinoA);
 console.log(botaoTreinoB);
