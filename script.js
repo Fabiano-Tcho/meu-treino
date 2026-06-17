@@ -199,6 +199,30 @@ function mostrarTreino(titulo, exercicios) {
                 JSON.stringify(treinoAtual)
             );
 
+            localStorage.setItem(
+                "treinos",
+                JSON.stringify(treinos)
+            );
+
+            console.log("Objeto treinos:");
+            console.log(treinos);
+
+            console.log("Treino atual:");
+            console.log(treinoAtual);
+
+            console.log("Treino selecionado:");
+            console.log(chaveTreinoAtual);
+
+            console.log(
+                "Treinos atualizados:",
+                localStorage.getItem("treinos")
+            );
+
+
+            
+
+            
+
             mostrarTreino(
                 tituloAtual,
                 treinoAtual
@@ -495,11 +519,13 @@ const treinoC = [
 ];
 
 const treinoCSalvo = localStorage.getItem("treinoC");
+
 if (treinoCSalvo) {
     Object.assign(
         treinoC,
         JSON.parse(treinoCSalvo)
     );
+}
 
 const treinos = {
     treinoA: treinoA,
@@ -508,19 +534,74 @@ const treinos = {
 
 };
 
-console.log(treinos);
+const treinosSalvos = localStorage.getItem("treinos");
 
+if (treinosSalvos) {
+
+    Object.assign(
+        treinos,
+        JSON.parse(treinosSalvos)
+    );
+
+    console.log(
+        "Treinos recuperados do localStorage"
+    );
 }
 
-const botaoTreinoA = document.getElementById("btnTreinoA");
-const botaoTreinoB = document.getElementById("btnTreinoB");
-const botaoTreinoC = document.getElementById("btnTreinoC");
+console.log("Treinos carregados:", treinos);
+
+const listaTreinos = document.getElementById("listaTreinos");
+
+function criarBotoesTreinos() {
+    
+    listaTreinos.innerHTML = "";
+
+    console.log(listaTreinos);
+
+    for (let nomeTreino in treinos) {
+
+        console.log("Criado botão:", nomeTreino);
+        
+        const botao = document.createElement("button");
+
+        botao.textContent = nomeTreino;
+
+        botao.addEventListener(
+            "click",
+            function() {
+
+                tituloAtual = nomeTreino;
+
+                treinoAtual = treinos[nomeTreino];
+
+                chaveTreinoAtual = nomeTreino;
+
+                mostrarTreino(
+                    nomeTreino,
+                    treinos[nomeTreino]
+                );
+            }
+        );
+
+        listaTreinos.appendChild(botao);
+    }
+}
+
+criarBotoesTreinos();
+
+//const botaoTreinoA = document.getElementById("btnTreinoA");
+//const botaoTreinoB = document.getElementById("btnTreinoB");
+//const botaoTreinoC = document.getElementById("btnTreinoC");
 
 const conteudoTreino = document.getElementById("conteudoTreino");
 
 const btnMostrarFormulario = document.getElementById("btnMostrarFormulario");
 const formularioExercicio = document.getElementById("formularioExercicio");
 const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
+
+const btnMostrarFormularioTreino = document.getElementById("btnMostrarFormularioTreino");
+const formularioTreino = document.getElementById("formularioTreino");
+const btnCancelarTreino = document.getElementById("btnCancelarTreino");
 
 btnMostrarFormulario.addEventListener("click", function() {
 
@@ -548,6 +629,72 @@ btnCancelarExercicio.addEventListener("click", function() {
 
     formularioExercicio.classList.add("oculto");
 });
+
+const btnSalvarTreino = document.getElementById("btnSalvarTreino");
+
+btnSalvarTreino.addEventListener(
+    "click",
+    function() {
+        const nomeTreino = document.getElementById(
+            "nomeTreino"
+        ).value.trim();
+
+        if (!nomeTreino) {
+            alert(
+                "Informe o nome do treino."
+            );
+
+            return;
+        }
+        treinos[nomeTreino] = [];
+
+        localStorage.setItem(
+            "treinos",
+            JSON.stringify(treinos)
+        );
+
+        criarBotoesTreinos();
+
+        console.log(
+            "Treino criado:",
+            nomeTreino
+        );
+        console.log(treinos);
+
+        console.log(
+            localStorage.getItem("treinos")
+        );
+
+        formularioTreino.classList.add(
+            "oculto"
+        );
+        document.getElementById(
+            "nomeTreino"
+        ).value = "";
+    }
+);
+
+btnCancelarTreino.addEventListener(
+    "click",
+    function() {
+        document.getElementById(
+            "nomeTreino"
+        ).value = "";
+
+        formularioTreino.classList.add(
+            "oculto"
+        );
+    }
+);
+
+btnMostrarFormularioTreino.addEventListener(
+    "click",
+    function() {
+        formularioTreino.classList.remove(
+            "oculto"
+        );
+    }
+);
 
 const btnSalvarExercicio = document.getElementById("btnSalvarExercicio");
 
@@ -609,14 +756,33 @@ btnSalvarExercicio.addEventListener("click", function() {
         indiceEdicao = null;
     
     } else {
+
         treinoAtual.push(novoExercicio);
 
     }
 
+    treinos[chaveTreinoAtual] = treinoAtual;
+
+    console.log("chaveTreinoAtual:", chaveTreinoAtual);
+
+    console.log("treinoAtual:");
+    console.log(treinoAtual);
+
+    console.log("treinos:");
+    console.log(treinos);
+
+    console.log("treinos[chaveTreinoAtual]:");
+    console.log(treinos[chaveTreinoAtual]);
+
     localStorage.setItem(
-        chaveTreinoAtual,
-        JSON.stringify(treinoAtual)
-    );    
+        "treinos",
+        JSON.stringify(treinos)
+    );
+
+    console.log(
+        "salvo no localstorage:",
+        localStorage.getItem("TREINOS")
+    );
 
     mostrarTreino(
         tituloAtual,
@@ -642,15 +808,13 @@ btnSalvarExercicio.addEventListener("click", function() {
 
 });
 
-
-
-
 let tituloAtual = "";
 let treinoAtual = [];
 let chaveTreinoAtual = "";
 
 let indiceEdicao = null;
 
+/*
 console.log(botaoTreinoA);
 console.log(botaoTreinoB);
 console.log(botaoTreinoC);
@@ -675,4 +839,4 @@ botaoTreinoC.addEventListener("click", function() {
     treinoAtual = treinoC;
     chaveTreinoAtual = "treinoC";
     mostrarTreino("Treino C", treinoC);
-});
+});*/

@@ -9,14 +9,39 @@
 <body>
     <h1>Meu Treino</h1>
 
-    <button id="btnTreinoA">Treino A</button>
-    <button id="btnTreinoB">Treino B</button>
-    <button id="btnTreinoC">Treino C</button>
+    <div id="listaTreinos">
+        
+    </div>
+
     <button id="btnFinalizarTreino" onclick="finalizarTreino()">Finalizar Treino</button>
 
     <div id="conteudoTreino">
 
     </div>
+
+    <button id="btnMostrarFormularioTreino">
+        + Novo Treino
+    </button>
+
+    <div id="formularioTreino" class="oculto">
+        <h3>Novo Treino</h3>
+
+        <label>Nome do Treino:</label>
+
+        <input
+            type="text"
+            id="nomeTreino">
+        
+        <button id="btnSalvarTreino">
+            Criar Treino
+        </button>
+
+        <button id="btnCancelarTreino">
+            Cancelar
+        </button>
+
+    </div>
+
 
     <button id="btnMostrarFormulario">
         + Adicionar Exercício
