@@ -123,6 +123,14 @@ function mostrarTreino(titulo, exercicios) {
         
     `;
 
+    const btnFinalizarTreino =
+        document.getElementById("btnFinalizarTreino");
+
+    btnFinalizarTreino.addEventListener(
+        "click",
+        finalizarTreino
+    );    
+
     const botoesDescanso = document.querySelectorAll(".btn-descanso");
     for (let botao of botoesDescanso) {
         botao.addEventListener("click", function() {
@@ -218,11 +226,6 @@ function mostrarTreino(titulo, exercicios) {
                 localStorage.getItem("treinos")
             );
 
-
-            
-
-            
-
             mostrarTreino(
                 tituloAtual,
                 treinoAtual
@@ -293,6 +296,38 @@ function mostrarTreino(titulo, exercicios) {
 
         console.log("Antes:", treinoAtual);
 
+        const historicoSalvo =
+            localStorage.getItem("historicoTreinos");
+
+        let historico = [];
+
+        if (historicoSalvo) {
+
+            historico = JSON.parse(
+                historicoSalvo
+            );
+        }
+
+        const registroTreino = {
+            
+            data: new Date().toLocaleString("pt-BR"),
+
+            treino: tituloAtual,
+
+            exercicios: structuredClone(
+                treinoAtual
+            )
+        };
+
+        historico.push(
+            registroTreino
+        );
+
+        localStorage.setItem(
+            "historicoTreinos",
+            JSON.stringify(historico)
+        );
+
         for (let exercicio of treinoAtual) {
             exercicio.seriesRealizadas = 0;
         }
@@ -309,7 +344,51 @@ function mostrarTreino(titulo, exercicios) {
             treinoAtual
         );
     }
-    
+
+function mostrarHistorico() {
+
+    const historico =
+    JSON.parse(
+        localStorage.getItem("historicoTreinos")
+    ) || [];
+
+    let html = `
+        <h2> Histórico de Treinos</h2>
+    `;
+
+    if (historico.length === 0) {
+        
+        html += `
+            <p>
+                Nenhum treino finalizado ainda.
+            </p>
+        `;
+
+    }   else {
+
+        for (let registro of historico) {
+
+            html += `
+                <div class="cartao-historico">
+                
+                    <h3>${registro.treino}</h3>
+                    
+                    <p>
+                        Exercícios:
+                        ${registro.data}
+                    </p>
+                
+                </div>
+            `;
+        }
+    }
+
+    historicoTreinosDiv.innerHTML = html;
+
+    historicoTreinosDiv.classList.remove(
+        "oculto"
+    );
+}
 
 const treinoA = [
     {
@@ -589,6 +668,8 @@ function criarBotoesTreinos() {
 
 criarBotoesTreinos();
 
+
+
 //const botaoTreinoA = document.getElementById("btnTreinoA");
 //const botaoTreinoB = document.getElementById("btnTreinoB");
 //const botaoTreinoC = document.getElementById("btnTreinoC");
@@ -602,6 +683,19 @@ const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
 const btnMostrarFormularioTreino = document.getElementById("btnMostrarFormularioTreino");
 const formularioTreino = document.getElementById("formularioTreino");
 const btnCancelarTreino = document.getElementById("btnCancelarTreino");
+
+const btnHistorico =
+    document.getElementById("btnHistorico");
+
+    const historicoTreinosDiv =
+    document.getElementById("historicoTreinos");
+
+btnHistorico.addEventListener(
+    "click",
+    mostrarHistorico
+);
+
+
 
 btnMostrarFormulario.addEventListener("click", function() {
 
