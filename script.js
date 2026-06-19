@@ -19,6 +19,18 @@ function mostrarTreino(titulo, exercicios) {
 
                 <p>Carga Atual: ${exercicio.cargaAtual} kg</p>
 
+                <button
+                    class="btn-aumentarCarga"
+                    data-indice="${i}">
+                    + 5 Kg
+                </button>
+
+                <button
+                    class="btn-diminuirCarga"
+                    data-indice="${i}">
+                    - 5 Kg
+                </button>
+                
                 <p class="tempo-descanso">
                     Descanso: ${exercicio.descanso} segundos
                 </p>
@@ -186,6 +198,20 @@ function mostrarTreino(titulo, exercicios) {
 
     const botoesExcluir = document.querySelectorAll(".btn-excluirExercicio");
 
+    const botoesAumentarCarga =
+        document.querySelectorAll(
+            ".btn-aumentarCarga"
+        );
+
+    const botoesDiminuirCarga =
+        document.querySelectorAll(
+            ".btn-diminuirCarga"
+        );
+    
+    console.log("Botões aumentar:",botoesAumentarCarga.length);
+
+    console.log("Botões diminuir:", botoesDiminuirCarga.length);
+
     for (let botao of botoesExcluir) {
         botao.addEventListener("click", function() {
 
@@ -262,6 +288,69 @@ function mostrarTreino(titulo, exercicios) {
             formularioExercicio.classList.remove("oculto");
         });
     }
+
+    for (let botao of botoesAumentarCarga) {
+
+        botao.addEventListener(
+            "click",
+            function() {
+
+                const indice =
+                    Number(botao.dataset.indice);
+
+                const cargaAtual =
+                    Number(
+                        treinoAtual[indice].cargaAtual
+                    ) || 0;
+
+                treinoAtual[indice].cargaAtual =
+                    cargaAtual + 5;
+
+                localStorage.setItem(
+                    "treinos",
+                    JSON.stringify(treinos)
+                );
+
+                mostrarTreino(
+                    tituloAtual,
+                    treinoAtual
+                );
+            }
+        );
+    }
+
+    for (let botao of botoesDiminuirCarga) {
+
+        botao.addEventListener(
+            "click",
+            function() {
+
+                const indice =
+                    Number(botao.dataset.indice);
+                
+                const cargaAtual =
+                    Number(
+                        treinoAtual[indice].cargaAtual
+                    ) || 0;
+                
+                treinoAtual[indice].cargaAtual =
+                    Math.max(
+                        0,
+                        cargaAtual - 5
+                    );
+                
+                localStorage.setItem(
+                    "treinos",
+                    JSON.stringify(treinos)
+                );
+
+                mostrarTreino(
+                    tituloAtual,
+                    treinoAtual
+                );
+            }
+        );
+    }
     
     for (let botao of botoesConcluir) {
         botao.addEventListener("click", function() {
@@ -323,6 +412,29 @@ function mostrarTreino(titulo, exercicios) {
             registroTreino
         );
 
+        let evolucao =
+        JSON.parse(
+            localStorage.getItem("evolucaoExercicios")
+        ) || {};
+
+        for (let exercicio of treinoAtual) {
+
+            if (!evolucao[exercicio.nome]) {
+                evolucao[exercicio.nome] = [];
+            }
+
+            evolucao[exercicio.nome].push({
+                data: new Date().toLocaleString("pt-BR"),
+
+                carga: exercicio.cargaAtual
+            })
+        }
+
+        localStorage.setItem(
+            "evolucaoExercicios",
+            JSON.stringify(evolucao)
+        );
+
         localStorage.setItem(
             "historicoTreinos",
             JSON.stringify(historico)
@@ -368,15 +480,33 @@ function mostrarHistorico() {
 
         for (let registro of historico) {
 
+            let listaExercicios = "";
+
+            for (let exercicio of registro.exercicios) {
+
+                listaExercicios += `
+                    <li>
+                        ${exercicio.nome}
+                        -
+                        ${exercicio.cargaAtual || "Sem carga"} Kg
+                        -
+                        ${exercicio.series}/${exercicio.series} series
+                    </li>
+                `;
+            }
+
             html += `
                 <div class="cartao-historico">
-                
+                    
                     <h3>${registro.treino}</h3>
                     
                     <p>
-                        Exercícios:
                         ${registro.data}
                     </p>
+                    
+                    <ul>
+                        ${listaExercicios}
+                    </ul>
                 
                 </div>
             `;
@@ -875,7 +1005,7 @@ btnSalvarExercicio.addEventListener("click", function() {
 
     console.log(
         "salvo no localstorage:",
-        localStorage.getItem("TREINOS")
+        localStorage.getItem("treinos")
     );
 
     mostrarTreino(
