@@ -4,6 +4,20 @@ function mostrarTreino(titulo, exercicios) {
     
     for (let i = 0; i < exercicios.length; i++) {
         const exercicio = exercicios[i];
+        const evolucao =
+            JSON.parse(
+                localStorage.getItem("evolucaoExercicios")
+            ) || {};
+        
+        const historicoExercicio =
+            evolucao[exercicio.nome] || [];
+
+        const ultimasCargas =
+            historicoExercicio
+                .slice(-5)
+                .map(item => item.carga)
+                .join(" → ");
+
         const concluido = exercicio.seriesRealizadas === exercicio.series;
         
         listaExercicios += `
@@ -17,7 +31,15 @@ function mostrarTreino(titulo, exercicios) {
 
                 <p>Séries Realizadas: ${exercicio.seriesRealizadas}/${exercicio.series}</p>
 
-                <p>Carga Atual: ${exercicio.cargaAtual} kg</p>
+                <p>
+                    Carga Atual:
+                    ${exercicio.cargaAtual || 0} kg
+                </p>
+
+                <p>
+                    📈 Evolução:
+                    ${ultimasCargas || "Sem histórico"}
+                </p>
 
                 <button
                     class="btn-aumentarCarga"
