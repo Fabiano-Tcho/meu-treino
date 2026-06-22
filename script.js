@@ -31,27 +31,27 @@ function mostrarTreino(titulo, exercicios) {
 
                 <p>Séries Realizadas: ${exercicio.seriesRealizadas}/${exercicio.series}</p>
 
-                <p>
-                    Carga Atual:
-                    ${exercicio.cargaAtual || 0} kg
-                </p>
+                <div class="controle-carga">
 
-                <p>
-                    📈 Evolução:
-                    ${ultimasCargas || "Sem histórico"}
-                </p>
-
-                <button
-                    class="btn-aumentarCarga"
-                    data-indice="${i}">
-                    + 5 Kg
-                </button>
-
-                <button
-                    class="btn-diminuirCarga"
-                    data-indice="${i}">
-                    - 5 Kg
-                </button>
+                    <button
+                        class="btn-diminuirCarga"
+                        data-indice="${i}">
+                        -
+                    </button>
+                
+                    <input
+                        type="number"
+                        clas="input-carga"
+                        data-indice="${i}"
+                        value="${exercicio.cargaAtual || 0}">
+                    
+                    <button
+                        class="btn-aumentarCarga"
+                        data-indice="${i}">
+                        +
+                    </button>
+                
+                </div>
                 
                 <p class="tempo-descanso">
                     Descanso: ${exercicio.descanso} segundos
@@ -326,7 +326,7 @@ function mostrarTreino(titulo, exercicios) {
                     ) || 0;
 
                 treinoAtual[indice].cargaAtual =
-                    cargaAtual + 5;
+                    cargaAtual + 1;
 
                 localStorage.setItem(
                     "treinos",
@@ -358,7 +358,7 @@ function mostrarTreino(titulo, exercicios) {
                 treinoAtual[indice].cargaAtual =
                     Math.max(
                         0,
-                        cargaAtual - 5
+                        cargaAtual - 1
                     );
                 
                 localStorage.setItem(
