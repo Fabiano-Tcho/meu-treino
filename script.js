@@ -4,19 +4,52 @@ function mostrarTreino(titulo, exercicios) {
     
     for (let i = 0; i < exercicios.length; i++) {
         const exercicio = exercicios[i];
-        const evolucao =
-            JSON.parse(
-                localStorage.getItem("evolucaoExercicios")
-            ) || {};
-        
-        const historicoExercicio =
-            evolucao[exercicio.nome] || [];
 
-        const ultimasCargas =
-            historicoExercicio
-                .slice(-5)
-                .map(item => item.carga)
-                .join(" → ");
+        const evolucao =
+    JSON.parse(
+        localStorage.getItem("evolucaoExercicios")
+    ) || {};
+
+    const historicoExercicio =
+        evolucao[exercicio.nome] || [];
+
+    let textoEvolucao = "";
+
+    if (historicoExercicio.length >= 2) {
+
+        const ultimaCarga =
+            Number(
+                historicoExercicio[
+                    historicoExercicio.length - 1
+                ].carga
+            );
+
+        const penultimaCarga =
+            Number(
+                historicoExercicio[
+                    historicoExercicio.length - 2
+                ].carga
+            );
+
+        const diferenca =
+            ultimaCarga - penultimaCarga;
+
+        if (diferenca > 0) {
+
+            textoEvolucao =
+                `📈 +${diferenca} kg`;
+
+        } else if (diferenca < 0) {
+
+            textoEvolucao =
+                `📉 ${diferenca} kg`;
+
+        } else {
+
+            textoEvolucao =
+                `📊 Sem alteração`;
+        }
+    }
 
         const concluido = exercicio.seriesRealizadas === exercicio.series;
         
@@ -41,7 +74,7 @@ function mostrarTreino(titulo, exercicios) {
                 
                     <input
                         type="number"
-                        clas="input-carga"
+                        class="input-carga"
                         data-indice="${i}"
                         value="${exercicio.cargaAtual || 0}">
                     
@@ -52,6 +85,10 @@ function mostrarTreino(titulo, exercicios) {
                     </button>
                 
                 </div>
+
+                <p class="evolucao-carga">
+                    ${textoEvolucao}
+                </p>
                 
                 <p class="tempo-descanso">
                     Descanso: ${exercicio.descanso} segundos
@@ -229,6 +266,9 @@ function mostrarTreino(titulo, exercicios) {
         document.querySelectorAll(
             ".btn-diminuirCarga"
         );
+
+    const inputsCarga =
+        document.querySelectorAll(".input-carga");
     
     console.log("Botões aumentar:",botoesAumentarCarga.length);
 
@@ -392,6 +432,31 @@ function mostrarTreino(titulo, exercicios) {
             console.log(exercicios[indice]);
         });
 
+    }
+
+    for (let input of inputsCarga) {
+
+        input.addEventListener(
+            "change",
+            function() {
+
+                const indice =
+                    Number(input.dataset.indice);
+                
+                treinoAtual[indice].cargaAtual =
+                    Number(input.value) || 0;
+
+                localStorage.setItem(
+                    "treinos",
+                    JSON.stringify(treinos)
+                );
+
+                mostrarTreino(
+                    tituloAtual,
+                    treinoAtual
+                );
+            }
+        );
     }
 }
 
