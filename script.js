@@ -13,42 +13,26 @@ function mostrarTreino(titulo, exercicios) {
     const historicoExercicio =
         evolucao[exercicio.nome] || [];
 
-    let textoEvolucao = "";
-
-    if (historicoExercicio.length >= 2) {
-
-        const ultimaCarga =
-            Number(
-                historicoExercicio[
-                    historicoExercicio.length - 1
-                ].carga
+    const cargasSemRepeticao =
+        historicoExercicio
+            .map(item => item.carga)
+            .filter(
+                (carga, indice, array) =>
+                    indice === 0 ||
+                    carga !== array[indice -1]
             );
+        
+    const ultimasCargas =
+            cargasSemRepeticao
+                .slice(-5)
+                .join(" → ");
+    
+    let textoHistorico = "";
 
-        const penultimaCarga =
-            Number(
-                historicoExercicio[
-                    historicoExercicio.length - 2
-                ].carga
-            );
+    if (ultimasCargas) {
 
-        const diferenca =
-            ultimaCarga - penultimaCarga;
-
-        if (diferenca > 0) {
-
-            textoEvolucao =
-                `📈 +${diferenca} kg`;
-
-        } else if (diferenca < 0) {
-
-            textoEvolucao =
-                `📉 ${diferenca} kg`;
-
-        } else {
-
-            textoEvolucao =
-                `📊 Sem alteração`;
-        }
+        textoHistorico =
+            `Últimas cargas: ${ultimasCargas}`;
     }
 
         const concluido = exercicio.seriesRealizadas === exercicio.series;
@@ -58,11 +42,25 @@ function mostrarTreino(titulo, exercicios) {
 
                 <h3>${concluido ? "✅ " : ""}${exercicio.nome}</h3>
            
-                <p>${exercicio.series} séries</p>
+            <div class="info-exercicio">
 
-                <p>${exercicio.repeticoes} repetições</p>
+                <span>
+                    ${exercicio.series} séries
+                </span>
 
-                <p>Séries Realizadas: ${exercicio.seriesRealizadas}/${exercicio.series}</p>
+                <span>
+                    ${exercicio.repeticoes} reps
+                </span>
+
+                <span>
+                    ${exercicio.seriesRealizadas}/${exercicio.series}
+                </span>
+
+            </div>
+
+                 <p class="titulo-carga">
+                    Carga Atual
+                </p>
 
                 <div class="controle-carga">
 
@@ -86,13 +84,17 @@ function mostrarTreino(titulo, exercicios) {
                 
                 </div>
 
-                <p class="evolucao-carga">
-                    ${textoEvolucao}
+                <p class="historico-carga">
+                    ${textoHistorico}
                 </p>
                 
                 <p class="tempo-descanso">
                     Descanso: ${exercicio.descanso} segundos
                 </p>
+
+                <div class="barra-descanso">
+                    <div class="barra-progresso" data-indice="${i}">
+                </div>
 
                 <button
                     class="btn-descanso"
@@ -101,20 +103,20 @@ function mostrarTreino(titulo, exercicios) {
                 </button>
             
                 <button
-                    class="btn-concluirSerie"
+                    class="btn-concluirSerie btn-sucesso"
                     data-indice=" ${i}"
                     ${concluido ? "disabled" : ""}>
                     Concluir Série
                 </button>
 
                 <button
-                    class="btn-editarExercicio"
+                    class="btn-editarExercicio btn-editar"
                     data-indice="${i}">
                     Editar Exercício
                 </button>
 
                 <button
-                    class="btn-excluirExercicio"
+                    class="btn-excluirExercicio btn-excluir"
                     data-indice="${i}">
                     Excluir Exercício
                 </button>                
@@ -209,23 +211,33 @@ function mostrarTreino(titulo, exercicios) {
             const exercicio = exercicios[indice];
 
             console.log(exercicio);
-            console.log("Descanso:", exercicio.descanso)
-
-            if (exercicio.cronometro) {
-                clearInterval(exercicio.cronometro);
-            }
-            let tempo = exercicio.descanso;
+            console.log("Descanso:", exercicio.descanso)  
+        
             const cartao = botao.closest(".cartao-exercicio");
+            const barra = cartao.querySelector(".barra-progresso");
             const textoDescanso =
                 cartao.querySelector(".tempo-descanso");
-            
+
+            textoDescanso.classList.remove("tempo-alerta");
+
+            if (exercicio.cronometro) {
+                clearInterval(exercicio.cronometro)
+                exercicio.cronometro = null;
+            } 
+
+            let tempo = exercicio.descanso;
+
+            const tempoTotal = exercicio.descanso;
+            barra.style.width = "100%";
+
+            textoDescanso.textContent =
+                `Descanso: ${tempo} segundos`;
+                        
             exercicio.cronometro = setInterval(function() {
 
             console.log("Tempo:", tempo);
 
             if (tempo <= 0) {
-
-                console.log("PAROU");
 
                 clearInterval(exercicio.cronometro);
 
@@ -235,9 +247,13 @@ function mostrarTreino(titulo, exercicios) {
                 textoDescanso.classList.remove("tempo-alerta");
 
                 return;
+
             }
 
             tempo--;
+
+            const porcentagem = (tempo / tempoTotal) * 100;
+            barra.style.width = porcentagem + "%";
 
             textoDescanso.textContent =
                 `Descanso: ${tempo} segundos`;
@@ -510,11 +526,26 @@ function mostrarTreino(titulo, exercicios) {
                 evolucao[exercicio.nome] = [];
             }
 
-            evolucao[exercicio.nome].push({
-                data: new Date().toLocaleString("pt-BR"),
+            const historicoExercicio =
+                evolucao[exercicio.nome];
+            
+            const ultimoRegistro =
+                historicoExercicio[
+                    historicoExercicio.length -1
+                ];
+            
+            if (
+                !ultimoRegistro ||
+                Number(ultimoRegistro.carga) !==
+                Number(exercicio.cargaAtual)
+            ) {
 
-                carga: exercicio.cargaAtual
-            })
+                historicoExercicio.push({
+                    data: new Date().toLocaleString("pt-BR"),
+
+                    carga: exercicio.cargaAtual
+                });
+            }
         }
 
         localStorage.setItem(

@@ -55,7 +55,7 @@ button {
 }
 
 .descanso-ativo {
-    font-sdize: 24px;
+    font-size: 24px;
     font-weight: bold;
     color: rgba(255, 0, 0, 0.7);;    
 }
@@ -68,17 +68,66 @@ button {
 }
 
 @keyframes pulsar {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.15);
-    }
-    100% {
-        transform: scale(1);
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
     }
 }
 
 .oculto {
     display: none;
+}
+
+.btn-aumentarCarga, .btn-diminuirCarga {
+    width: 35px;
+    height: 35px;
+
+    padding: 0;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+.input-carga {
+    width: 70px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.info-exercicio {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.btn-sucesso {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-editar {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-excluir {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cartao-exercicio {
+    transition: all 0.2s ease;
+}
+
+.cartao-exercicio:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15 px rgba(0,0,0,0.15);
+}
+
+.cartao-exercicio h3 {
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
 }
