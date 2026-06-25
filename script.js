@@ -93,7 +93,7 @@ function mostrarTreino(titulo, exercicios) {
                 </p>
 
                 <div class="barra-descanso">
-                    <div class="barra-progresso" data-indice="${i}">
+                    <div class="barra-progresso" data-indice="${i}"></div>
                 </div>
 
                 <button
@@ -207,6 +207,8 @@ function mostrarTreino(titulo, exercicios) {
     const botoesDescanso = document.querySelectorAll(".btn-descanso");
     for (let botao of botoesDescanso) {
         botao.addEventListener("click", function() {
+
+            console.log("CLIQUE NO BOTÃO");
             const indice = Number(botao.dataset.indice);
             const exercicio = exercicios[indice];
 
@@ -237,12 +239,16 @@ function mostrarTreino(titulo, exercicios) {
 
             console.log("Tempo:", tempo);
 
-            if (tempo <= 0) {
+            if (tempo === 0) {
+                
+                console.log("DESCANSO FINALIZADO");
 
                 clearInterval(exercicio.cronometro);
 
+                exercicio.cronometro = null;
+
                 textoDescanso.textContent =
-                    `Descanso: ${exercicio.descanso} segundos`;
+                    "✅ Volte a Treinar!!!";
 
                 textoDescanso.classList.remove("tempo-alerta");
 
@@ -897,6 +903,10 @@ function criarBotoesTreinos() {
             "click",
             function() {
 
+                if (!inicioTreino) {
+                    inicioTreino = new Date();
+                }
+
                 tituloAtual = nomeTreino;
 
                 treinoAtual = treinos[nomeTreino];
@@ -1153,6 +1163,8 @@ btnSalvarExercicio.addEventListener("click", function() {
 let tituloAtual = "";
 let treinoAtual = [];
 let chaveTreinoAtual = "";
+
+let inicioTreino = null;
 
 let indiceEdicao = null;
 
