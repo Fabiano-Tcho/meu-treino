@@ -71,7 +71,7 @@ button {
     0% { opacity: 1; }
     50% { opacity: 0.4; }
     100% { opacity: 1; }
-    }
+    
 }
 
 .oculto {
@@ -130,4 +130,15 @@ button {
     color: #333;
     margin-bottom: 12px;
     font-size: 1.2rem;
+}
+
+.gif-exercicio {
+    width: 100%;
+    max-width: 300px;
+
+    border-radius: 10px;
+
+    display: block;
+
+    margin: 10px auto;
 }

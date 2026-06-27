@@ -36,6 +36,41 @@ function mostrarTreino(titulo, exercicios) {
     }
 
         const concluido = exercicio.seriesRealizadas === exercicio.series;
+
+        let botaoGif = "";
+
+        if (exercicio.gif) {
+
+            botaoGif = `
+                <button
+                    class="btn-mostrarGif"
+                    data-indice="${i}">
+                    👁 Mostrar Demonstração
+                </button>
+
+                <div
+                    class="container-gif oculto">
+
+                    <img
+                        src="${exercicio.gif}"
+                        class="gif-exercicio"
+                        alt="${exercicio.nome}">
+                </div>
+            `;
+        }
+
+        let botaoVideo = "";
+
+        if (exercicio.video) {
+
+            botaoVideo =`
+                <a
+                    href="${exercicio.video}"
+                    target="blank">
+                    ▶ Ver Vídeo
+                </a>
+            `;
+        }
         
         listaExercicios += `
             <div class="cartao-exercicio ${concluido ? "cartao-concluido" : ""}">
@@ -87,6 +122,14 @@ function mostrarTreino(titulo, exercicios) {
                 <p class="historico-carga">
                     ${textoHistorico}
                 </p>
+
+                <div class="midia-exercicio">
+
+                    ${botaoGif}
+
+                    ${botaoVideo}
+
+                </div>
                 
                 <p class="tempo-descanso">
                     Descanso: ${exercicio.descanso} segundos
@@ -275,6 +318,7 @@ function mostrarTreino(titulo, exercicios) {
     const botoesConcluir = document.querySelectorAll(".btn-concluirSerie");
 
     const botoesEditar = document.querySelectorAll(".btn-editarExercicio");
+    const botoesMostrarGif = document.querySelectorAll(".btn-mostrarGif");
     console.log("Botões editar:", botoesEditar.length);
 
     const botoesExcluir = document.querySelectorAll(".btn-excluirExercicio");
@@ -480,6 +524,36 @@ function mostrarTreino(titulo, exercicios) {
             }
         );
     }
+
+    for (let botao of botoesMostrarGif) {
+
+        botao.addEventListener(
+            "click",
+            function() {
+
+                const container =
+                    botao.nextElementSibling;
+
+                container.classList.toggle(
+                    "oculto"
+                );
+
+                if (
+                    container.classList.contains(
+                        "oculto"
+                    )
+                ) {
+
+                    botao.textContent =
+                        "👁 Mostrar Demonstração";
+                } else {
+
+                    botao.textContent =
+                        "🙈 Ocultar Demonstração";
+                }
+            }
+        );
+    }
 }
 
     function finalizarTreino() {
@@ -641,6 +715,123 @@ function mostrarHistorico() {
 
     historicoTreinosDiv.classList.remove(
         "oculto"
+    );
+}
+
+function exportarBackup() {
+
+    const backup = {
+
+        treinos:
+            JSON.parse(
+                localStorage.getItem("treinos")
+            ),
+        
+        historicoTreinos:
+            JSON.parse(
+                localStorage.getItem(
+                    "historicoTreinos"
+                )
+            ),
+
+        evolucaoExercicios:
+            JSON.parse(
+                localStorage.getItem(
+                    "evolucaoExercicios"
+                )
+            )
+    };
+
+    const textoBackup =
+        JSON.stringify(
+            backup,
+            null,
+            2
+        );
+
+    const blob =
+        new Blob(
+            [textoBackup],
+            {
+                type:
+                    "application/json"
+            }
+        );
+    
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "backup-treinos.json";
+    
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importarBackup(evento) {
+
+    const arquivo =
+        evento.target.files[0];
+    
+    if(!arquivo) {
+        return;
+    }
+
+    const leitor =
+        new FileReader();
+
+    leitor.onload =
+        function(e) {
+
+            const dadosBackup =
+                JSON.parse(
+                    e.target.result
+                );
+            
+            console.log(
+                "Backup carregado:"
+            );
+
+            console.log(
+                dadosBackup
+            );
+
+            localStorage.setItem(
+                "treinos",
+                JSON.stringify(
+                    dadosBackup.treinos
+                )
+            );
+
+            localStorage.setItem(
+                "historicoTreinos",
+                JSON.stringify(
+                    dadosBackup.historicoTreinos
+                )
+            );
+
+            localStorage.setItem(
+                "evolucaoExercicios",
+                JSON.stringify(
+                    dadosBackup.evolucaoExercicios
+                )
+            );
+
+            alert(
+                "Backup restaurado com sucesso!"
+            );
+
+            location.reload();
+        };
+
+    leitor.readAsText(
+        arquivo
     );
 }
 
@@ -945,12 +1136,45 @@ const btnCancelarTreino = document.getElementById("btnCancelarTreino");
 const btnHistorico =
     document.getElementById("btnHistorico");
 
-    const historicoTreinosDiv =
+const btnExportarBackup =
+    document.getElementById(
+        "btnExportarBackup"
+    );
+
+const btnImportarBackup =
+    document.getElementById(
+        "btnImportarBackup"
+    );
+
+const inputImportarBackup =
+    document.getElementById(
+        "inputImportarBackup"
+    );
+
+const historicoTreinosDiv =
     document.getElementById("historicoTreinos");
 
 btnHistorico.addEventListener(
     "click",
     mostrarHistorico
+);
+
+btnExportarBackup.addEventListener(
+    "click",
+    exportarBackup
+);
+
+btnImportarBackup.addEventListener(
+    "click",
+    function() {
+
+        inputImportarBackup.click();
+    }
+);
+
+inputImportarBackup.addEventListener(
+    "change",
+    importarBackup
 );
 
 
