@@ -247,55 +247,7 @@ function mostrarTreino(titulo, exercicios) {
         
     `;
 
-    if (cronometroTreino) {
-
-        clearInterval(
-            cronometroTreino
-        );
-    }
-
-    cronometroTreino =
-        setInterval(
-            function() {
-
-                const agora =
-                    new Date();
-
-                const diferenca =
-                    Math.floor(
-                        (
-                            agora -
-                            inicioTreino
-                        ) / 1000
-                    );
-                
-                const minutos =
-                    Math.floor(
-                        diferenca / 60
-                    );
-
-                const segundos =
-                    diferenca % 60;
-
-                const textoTempo =
-                    document.getElementById(
-                        "tempoTreino"
-                    );
-                
-                if (textoTempo) {
-
-                    textoTempo.textContent =
-                        `⏱ Tempo de treino: ${
-                            String(minutos)
-                                .padStart(2, "0")
-                        }:${
-                            String(segundos)
-                                .padStart(2, "0")
-                        }`;
-                }
-            },
-            1000
-        )
+    iniciarCronometroTreino();
         
     const btnFinalizarTreino =
         document.getElementById("btnFinalizarTreino");
@@ -539,36 +491,59 @@ function mostrarTreino(titulo, exercicios) {
     }
     
     for (let botao of botoesConcluir) {
-        botao.addEventListener(
-            "click",
-            function() {
-                const indice =
-                    Number(botao.dataset.indice);
+
+    botao.addEventListener(
+        "click",
+        function() {
+
+            const indice =
+                Number(botao.dataset.indice);
+
+            let deveIniciarDescanso = false;
+
+            if (
+                exercicios[indice].seriesRealizadas <
+                exercicios[indice].series
+            ) {
+
+                exercicios[indice].seriesRealizadas++;
 
                 if (
                     exercicios[indice].seriesRealizadas <
-                    exercicios[indice].series            
-                ) {            
-                    
-                    exercicios[indice].seriesRealizadas++;
-
-                    localStorage.setItem(
-                        chaveTreinoAtual,
-                        JSON.stringify(treinoAtual)
-                    );
+                    exercicios[indice].series
+                ) {
+                    deveIniciarDescanso = true;
                 }
-    
-                mostrarTreino(
-                    tituloAtual,
-                    treinoAtual);
 
-                console.log(
-                    exercicios[indice]
+                localStorage.setItem(
+                    chaveTreinoAtual,
+                    JSON.stringify(treinoAtual)
                 );
             }
-        );
 
-    }
+            mostrarTreino(
+                tituloAtual,
+                treinoAtual
+            );
+
+            if (deveIniciarDescanso) {
+
+                const botaoDescanso =
+                    document.querySelector(
+                        `.btn-descanso[data-indice="${indice}"]`
+                    );
+
+                if (botaoDescanso) {
+                    botaoDescanso.click();
+                }
+            }
+
+            console.log(
+                exercicios[indice]
+            );
+        }
+    );
+}
 
     for (let input of inputsCarga) {
 
@@ -626,6 +601,73 @@ function mostrarTreino(titulo, exercicios) {
     }
 }
 
+    function iniciarCronometroTreino() {
+
+        if (cronometroTreino) {
+
+                clearInterval(
+                    cronometroTreino
+                );
+            }
+
+            cronometroTreino =
+                setInterval(
+                    function() {
+
+                        const agora =
+                            new Date();
+
+                        const diferenca =
+                            Math.floor(
+                                (
+                                    agora -
+                                    inicioTreino
+                                ) / 1000
+                            );
+                        
+                        const minutos =
+                            Math.floor(
+                                diferenca / 60
+                            );
+
+                        const segundos =
+                            diferenca % 60;
+
+                        const textoTempo =
+                            document.getElementById(
+                                "tempoTreino"
+                            );
+                        
+                        if (textoTempo) {
+
+                            textoTempo.textContent =
+                                `⏱ Tempo de treino: ${
+                                    String(minutos)
+                                        .padStart(2, "0")
+                                }:${
+                                    String(segundos)
+                                        .padStart(2, "0")
+                                }`;
+                        }
+                    },
+                    1000
+                );
+    }
+
+    function pararCronometroTreino() {
+
+        if(cronometroTreino) {
+
+            clearInterval(
+                cronometroTreino
+            );
+
+            cronometroTreino = null;
+        }
+
+        inicioTreino = null;
+    }
+
     function finalizarTreino() {
 
         const confirmar = confirm(
@@ -637,6 +679,11 @@ function mostrarTreino(titulo, exercicios) {
         }
 
         console.log("Antes:", treinoAtual);
+
+        const treinoFinalizado = tituloAtual;
+
+        const exerciciosFinalizados =
+            structuredClone(treinoAtual);
 
         const historicoSalvo =
             localStorage.getItem("historicoTreinos");
@@ -713,6 +760,21 @@ function mostrarTreino(titulo, exercicios) {
             chaveTreinoAtual
         );
 
+        let exerciciosConcluidosResumo = 0;
+
+        let seriesConcluidasResumo = 0;
+
+        for (let exercicio of exerciciosFinalizados) {
+
+            seriesConcluidasResumo +=
+                exercicio.seriesRealizadas;
+
+            if (exercicio.seriesRealizadas > 0) {
+
+                exerciciosConcluidosResumo++;
+            }
+        }
+
         for (let exercicio of treinoAtual) {
             exercicio.seriesRealizadas = 0;
         }
@@ -724,9 +786,68 @@ function mostrarTreino(titulo, exercicios) {
             JSON.stringify(treinoAtual)
         );
 
-        mostrarTreino(
-            tituloAtual,
-            treinoAtual
+        const fimTreino =
+            new Date();
+
+        const duracaoSegundos =
+            Math.floor(
+                (fimTreino - inicioTreino) / 1000
+            );
+
+        const minutosDuracao =
+            Math.floor(
+                duracaoSegundos / 60
+            );
+        
+        const segundosDuracao =
+            duracaoSegundos % 60;
+
+        const textoDuracao =
+            `${minutosDuracao} min ${segundosDuracao} s`;
+
+        pararCronometroTreino();
+
+        tituloAtual = "";
+        treinoAtual = [];
+        chaveTreinoAtual = "";
+
+        conteudoTreino.innerHTML = `
+            <div class="resumo-final">
+                <h2>✅ Treino finalizado</h2>
+            
+                <p>
+                    ${treinoFinalizado} concluído com sucesso.
+                </p>
+
+                <p>
+                    ⏱ Tempo total: ${textoDuracao}
+                </p>
+
+                <p>
+                    💪 Exercícios realizados: ${exerciciosConcluidosResumo}
+                </p>
+
+                <p>
+                    🔥 Séries concluídas: ${seriesConcluidasResumo}
+                </p>  
+
+                <button id="btnVoltarInicio">
+                    Tela Inicial
+                </button>
+            </div>            
+        `;
+
+        const btnVoltarInicio =
+            document.getElementById("btnVoltarInicio");
+
+        btnVoltarInicio.addEventListener(
+            "click",
+            function() {
+
+                conteudoTreino.innerHTML = "";
+
+                criarBotoesTreinos();
+            }
         );
     }
 
@@ -1212,6 +1333,24 @@ function criarBotoesTreinos() {
                 if (!inicioTreino) {
                     inicioTreino = new Date();
                 }
+
+                const botoesTreino =
+                    listaTreinos.querySelectorAll("button");
+
+                for (let botaoTreino of botoesTreino) {
+
+                    botaoTreino.classList.remove(
+                        "treino-sugerido"
+                    );
+
+                    botaoTreino.classList.remove(
+                        "treino-atual"
+                    );
+                }
+
+                botao.classList.add(
+                    "treino-atual"
+                );
 
                 tituloAtual = nomeTreino;
 
