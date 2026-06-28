@@ -142,3 +142,10 @@ button {
 
     margin: 10px auto;
 }
+
+.treino-sugerido {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5)
+};

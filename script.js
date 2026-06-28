@@ -1,4 +1,8 @@
 function mostrarTreino(titulo, exercicios) {
+
+    if (!inicioTreino) {
+        inicioTreino = new Date();
+    }
     
     let listaExercicios = "";
     
@@ -212,6 +216,10 @@ function mostrarTreino(titulo, exercicios) {
     conteudoTreino.innerHTML = `
         <h2>${titulo}</h2>
 
+        <p id="tempoTreino">
+            ⏱ Tempo de treino: 00:00
+        </p>
+
         <div class="barra-progresso">
             <div
                 class="barra-preenchida"
@@ -239,6 +247,56 @@ function mostrarTreino(titulo, exercicios) {
         
     `;
 
+    if (cronometroTreino) {
+
+        clearInterval(
+            cronometroTreino
+        );
+    }
+
+    cronometroTreino =
+        setInterval(
+            function() {
+
+                const agora =
+                    new Date();
+
+                const diferenca =
+                    Math.floor(
+                        (
+                            agora -
+                            inicioTreino
+                        ) / 1000
+                    );
+                
+                const minutos =
+                    Math.floor(
+                        diferenca / 60
+                    );
+
+                const segundos =
+                    diferenca % 60;
+
+                const textoTempo =
+                    document.getElementById(
+                        "tempoTreino"
+                    );
+                
+                if (textoTempo) {
+
+                    textoTempo.textContent =
+                        `⏱ Tempo de treino: ${
+                            String(minutos)
+                                .padStart(2, "0")
+                        }:${
+                            String(segundos)
+                                .padStart(2, "0")
+                        }`;
+                }
+            },
+            1000
+        )
+        
     const btnFinalizarTreino =
         document.getElementById("btnFinalizarTreino");
 
@@ -481,22 +539,34 @@ function mostrarTreino(titulo, exercicios) {
     }
     
     for (let botao of botoesConcluir) {
-        botao.addEventListener("click", function() {
-            const indice = Number(botao.dataset.indice);
-            if (
-                exercicios[indice].seriesRealizadas < exercicios[indice].series            
-            ) {            
-                
-                exercicios[indice].seriesRealizadas++;
-                localStorage.setItem(
-                    chaveTreinoAtual,
-                    JSON.stringify(treinoAtual)
+        botao.addEventListener(
+            "click",
+            function() {
+                const indice =
+                    Number(botao.dataset.indice);
+
+                if (
+                    exercicios[indice].seriesRealizadas <
+                    exercicios[indice].series            
+                ) {            
+                    
+                    exercicios[indice].seriesRealizadas++;
+
+                    localStorage.setItem(
+                        chaveTreinoAtual,
+                        JSON.stringify(treinoAtual)
+                    );
+                }
+    
+                mostrarTreino(
+                    tituloAtual,
+                    treinoAtual);
+
+                console.log(
+                    exercicios[indice]
                 );
             }
-
-            mostrarTreino(tituloAtual, treinoAtual);
-            console.log(exercicios[indice]);
-        });
+        );
 
     }
 
@@ -636,6 +706,11 @@ function mostrarTreino(titulo, exercicios) {
         localStorage.setItem(
             "historicoTreinos",
             JSON.stringify(historico)
+        );
+
+        localStorage.setItem(
+            "ultimoTreino",
+            chaveTreinoAtual
         );
 
         for (let exercicio of treinoAtual) {
@@ -1080,6 +1155,37 @@ function criarBotoesTreinos() {
     
     listaTreinos.innerHTML = "";
 
+    const ultimoTreino =
+        localStorage.getItem(
+            "ultimoTreino"
+        );
+    
+    const nomesTreinos =
+        Object.keys(treinos);
+
+    let proximoTreino = null;
+
+    if (
+        ultimoTreino &&
+        nomesTreinos.includes(
+            ultimoTreino
+        )
+    ) {
+        const indiceAtual =
+            nomesTreinos.indexOf(
+                ultimoTreino
+            );
+
+        const proximoIndice =
+            (indiceAtual +1)
+            % nomesTreinos.length;
+
+        proximoTreino =
+        nomesTreinos[
+            proximoIndice
+        ];
+    }
+
     console.log(listaTreinos);
 
     for (let nomeTreino in treinos) {
@@ -1087,6 +1193,15 @@ function criarBotoesTreinos() {
         console.log("Criado botão:", nomeTreino);
         
         const botao = document.createElement("button");
+
+        if (
+            nomeTreino === proximoTreino
+        ) {
+
+            botao.classList.add(
+                "treino-sugerido"
+            );
+        }
 
         botao.textContent = nomeTreino;
 
@@ -1389,6 +1504,8 @@ let treinoAtual = [];
 let chaveTreinoAtual = "";
 
 let inicioTreino = null;
+
+let cronometroTreino = null;
 
 let indiceEdicao = null;
 
