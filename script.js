@@ -697,21 +697,6 @@ function mostrarTreino(titulo, exercicios) {
             );
         }
 
-        const registroTreino = {
-            
-            data: new Date().toLocaleString("pt-BR"),
-
-            treino: tituloAtual,
-
-            exercicios: structuredClone(
-                treinoAtual
-            )
-        };
-
-        historico.push(
-            registroTreino
-        );
-
         let evolucao =
         JSON.parse(
             localStorage.getItem("evolucaoExercicios")
@@ -775,6 +760,17 @@ function mostrarTreino(titulo, exercicios) {
             }
         }
 
+        const totalExerciciosResumo =
+            exerciciosFinalizados.length;
+
+        let totalSeriesResumo = 0;
+
+        for (let exercicio of exerciciosFinalizados) {
+
+            totalSeriesResumo +=
+                exercicio.series;
+        }
+
         for (let exercicio of treinoAtual) {
             exercicio.seriesRealizadas = 0;
         }
@@ -805,6 +801,41 @@ function mostrarTreino(titulo, exercicios) {
         const textoDuracao =
             `${minutosDuracao} min ${segundosDuracao} s`;
 
+        const registroTreino = {
+
+            data: new Date().toLocaleString("pt-BR"),
+
+            treino: treinoFinalizado,
+
+            duracao: textoDuracao,
+
+            duracaoSegundos: duracaoSegundos,
+
+            exercicios: structuredClone(
+                exerciciosFinalizados
+            )
+        };
+
+        historico.push(
+            registroTreino
+        );
+
+        localStorage.setItem(
+            "historicoTreinos",
+            JSON.stringify(historico)
+        );
+
+        for (let exercicio of treinoAtual) {
+
+            if (exercicio.cronometro) {
+
+                clearInterval(exercicio.cronometro);
+
+                exercicio.cronometro = null;
+                
+            }
+        }
+
         pararCronometroTreino();
 
         tituloAtual = "";
@@ -813,23 +844,19 @@ function mostrarTreino(titulo, exercicios) {
 
         conteudoTreino.innerHTML = `
             <div class="resumo-final">
-                <h2>✅ Treino finalizado</h2>
+                <h2>🏆 Treino finalizado</h2>
             
                 <p>
-                    ${treinoFinalizado} concluído com sucesso.
+                    ⏱ Tempo: ${textoDuracao}
                 </p>
 
                 <p>
-                    ⏱ Tempo total: ${textoDuracao}
+                    💪 Exercícios: ${exerciciosConcluidosResumo} de ${totalExerciciosResumo}
                 </p>
 
                 <p>
-                    💪 Exercícios realizados: ${exerciciosConcluidosResumo}
+                    🔥 Séries: ${seriesConcluidasResumo} de ${totalSeriesResumo}
                 </p>
-
-                <p>
-                    🔥 Séries concluídas: ${seriesConcluidasResumo}
-                </p>  
 
                 <button id="btnVoltarInicio">
                     Tela Inicial
@@ -851,7 +878,7 @@ function mostrarTreino(titulo, exercicios) {
         );
     }
 
-function mostrarHistorico() {
+function mostrarHistorico(filtro = "") {
 
     const historico =
     JSON.parse(
@@ -859,8 +886,50 @@ function mostrarHistorico() {
     ) || [];
 
     let html = `
-        <h2> Histórico de Treinos</h2>
+        <h2>Histórico de Treinos (${historico.length})</h2>
+
+        <input
+            type="text"
+            id="inputBuscarHistorico"
+            placeholder="Buscar por número, treino, data ou exercício">
+
+        <button id="btnFecharHistorico">
+            Fechar Histórico
+        </button>
     `;
+
+    const historicoOrdenado =
+        historico.slice().reverse();
+
+    const historicoFiltrado =
+        historicoOrdenado.filter(
+            function(registro, indice) {
+
+                const numeroRegistro =
+                    historicoOrdenado.length - indice;
+
+                const textoBusca =
+                    `
+                    ${numeroRegistro}
+                    ${registro.treino}
+                    ${registro.data}
+                    ${registro.duracao || ""}
+                    ${registro.exercicios
+                        .map(exercicio => `
+                            ${exercicio.nome}
+                            ${exercicio.cargaAtual}
+                        `)
+                        .join(" ")}
+                    `.toLowerCase();
+                
+                return textoBusca.includes(
+                    filtro.toLowerCase()
+                );
+            }
+        );
+
+    const historicoVisivel =
+        historicoFiltrado.slice(0, 10);
 
     if (historico.length === 0) {
         
@@ -872,7 +941,13 @@ function mostrarHistorico() {
 
     }   else {
 
-        for (let registro of historico) {
+        for (let i = 0; i < historicoVisivel.length; i++) {
+
+            const registro =
+                historicoVisivel[i];
+
+            const numeroRegistro =
+                historicoOrdenado.length - i;
 
             let listaExercicios = "";
 
@@ -892,10 +967,16 @@ function mostrarHistorico() {
             html += `
                 <div class="cartao-historico">
                     
-                    <h3>${registro.treino}</h3>
+                    <h3>
+                        ${numeroRegistro} - ${registro.treino}
+                    </h3>
                     
                     <p>
                         ${registro.data}
+                    </p>
+
+                    <p>
+                        ⏱ Duração: ${registro.duracao || "Não registrada"}
                     </p>
                     
                     <ul>
@@ -911,6 +992,102 @@ function mostrarHistorico() {
 
     historicoTreinosDiv.classList.remove(
         "oculto"
+    );
+
+    const btnFecharHistorico =
+    document.getElementById("btnFecharHistorico");
+
+if (btnFecharHistorico) {
+
+    btnFecharHistorico.addEventListener(
+        "click",
+        function() {
+
+            historicoTreinosDiv.classList.add(
+                "oculto"
+            );
+        }
+    );
+}
+
+    const inputBuscarHistorico =
+        document.getElementById("inputBuscarHistorico");
+
+    if (inputBuscarHistorico) {
+
+        inputBuscarHistorico.value = filtro;
+
+        inputBuscarHistorico.focus();
+
+        inputBuscarHistorico.setSelectionRange(
+            inputBuscarHistorico.value.length,
+            inputBuscarHistorico.value.length
+        );
+
+        inputBuscarHistorico.addEventListener(
+            "input",
+            function() {
+
+                clearTimeout(
+                    temporizadorBuscaHistorico
+                );
+
+                temporizadorBuscaHistorico =
+                    setTimeout(
+                        function() {
+
+                            mostrarHistorico(
+                                inputBuscarHistorico.value
+                            );
+                        },
+                        500
+                    );
+            }
+        );
+    }
+
+    btnFecharHistorico.addEventListener(
+        "click",
+        function() {
+
+            historicoTreinosDiv.classList.add(
+                "oculto"
+            );
+
+            const btnFecharHistorico =
+                document.getElementById("btnFecharHistorico");
+
+            if (btnFecharHistorico) {
+
+                btnFecharHistorico.addEventListener(
+                    "click",
+                    function() {
+
+                        historicoTreinosDiv.classList.add(
+                            "oculto"
+                        );
+                    }
+                );
+            }
+
+            const inputBuscarHistorico =
+                document.getElementById("inputBuscarHistorico");
+            
+            if (inputBuscarHistorico) {
+
+                inputBuscarHistorico.value = filtro;
+
+                inputBuscarHistorico.addEventListener(
+                    "input",
+                    function() {
+
+                        mostrarHistorico(
+                            inputBuscarHistorico.value
+                        );
+                    }
+                );
+            }
+        }
     );
 }
 
@@ -1330,6 +1507,10 @@ function criarBotoesTreinos() {
             "click",
             function() {
 
+                historicoTreinosDiv.classList.add(
+                    "oculto"
+                );
+
                 if (!inicioTreino) {
                     inicioTreino = new Date();
                 }
@@ -1410,7 +1591,9 @@ const historicoTreinosDiv =
 
 btnHistorico.addEventListener(
     "click",
-    mostrarHistorico
+    function() {
+       mostrarHistorico("");
+    }
 );
 
 btnExportarBackup.addEventListener(
@@ -1641,6 +1824,8 @@ btnSalvarExercicio.addEventListener("click", function() {
 let tituloAtual = "";
 let treinoAtual = [];
 let chaveTreinoAtual = "";
+
+let temporizadorBuscadoHistorico = null;
 
 let inicioTreino = null;
 
