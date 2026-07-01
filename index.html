@@ -9,17 +9,43 @@
 <body>
     <h1>Meu Treino</h1>
 
-    <div id="listaTreinos">
+    <section class="secao-app">
+
+        <h2>📋 Treinos</h2>
+
+        <h3>🏋️ Musculação</h3>
+
+        <div id="listaTreinos">
+
+        </div>
+
+        <button id="btnMostrarFormularioTreino">
+            + Novo Treino
+        </button>
+
+        <button id="btnMostrarFormulario">
+            + Adicionar Exercício
+        </button>
+
+        <h3>🏃 Cardio</h3>
         
-    </div>
+        <button id="btnCaminhada">
+            🚶 Caminhada
+        </button>
+
+        <button id="btnCorrida">
+            🏃 Corrida
+        </button>
+
+        <button id="btnBicicleta">
+            🚴 Bicicleta
+        </button>
+
+    </section>
 
     <div id="conteudoTreino">
 
     </div>
-
-    <button id="btnMostrarFormularioTreino">
-        + Novo Treino
-    </button>
 
     <div id="formularioTreino" class="oculto">
         <h3>Novo Treino</h3>
@@ -40,28 +66,32 @@
 
     </div>
 
-    <button id="btnMostrarFormulario">
-        + Adicionar Exercício
-    </button>
-
-
     <div id="historicoTreinos" class="oculto"></div>
 
-    <button id="btnHistorico">
-        Histórico
-    </button>
+    <section class="secao-app">
+        <h2>📊 Dados</h2>
 
-    <button id="btnEstatisticas">
-        Estatísticas
-    </button>
+        <button id="btnHistorico" class="btn-navegacao">
+            Histórico
+        </button>
 
-    <button id="btnExportarBackup">
-        Exportar Backup
-    </button>
+        <button id="btnEstatisticas" class="btn-navegacao">
+            Estatísticas
+        </button>
 
-    <button id="btnImportarBackup">
-        Importar Backup
-    </button>
+    </section>
+
+    <section class="secao-app">
+        <h2>🛠 Ferramentas</h2>
+
+        <button id="btnExportarBackup">
+            Exportar Backup
+        </button>
+
+        <button id="btnImportarBackup">
+            Importar Backup
+        </button>
+    </section>
 
     <input
         type="file"

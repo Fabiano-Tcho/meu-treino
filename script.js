@@ -878,6 +878,112 @@ function mostrarTreino(titulo, exercicios) {
         );
     }
 
+function mostrarTelaCardio(tipoAtividade) {
+
+    historicoTreinosDiv.classList.add(
+        "oculto"
+    );
+
+    limparDestaqueTreinos();
+
+    limparDestaqueNavegacao();
+
+    let opcoesLocal = "";
+
+    if (
+        tipoAtividade === "Corrida" ||
+        tipoAtividade === "Caminhada"
+    ) {
+
+        opcoesLocal = `
+            <option value="Rua">Rua</option>
+            <option value="Esteira">Esteira</option>
+        `;
+
+    } else if (tipoAtividade === "Bicicleta") {
+
+        opcoesLocal = `
+            <option value="Rua">Rua</option>
+            <option value="Ergométrica">Ergométrica</option>
+        `;
+    }
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+            <h2>${tipoAtividade}</h2>
+
+            <label>
+                Local:
+            </label>
+
+            <select id="localCardio">
+                ${opcoesLocal}
+            </select>
+
+            <br><br>
+
+            <button id="btnContinuarCardio">
+                Continuar
+            </button>
+        </div>
+    `;
+
+    const btnContinuarCardio =
+        document.getElementById("btnContinuarCardio");
+
+    btnContinuarCardio.addEventListener(
+        "click",
+        function() {
+
+            const localCardio =
+                document.getElementById("localCardio").value;
+
+            mostrarFormularioCardio(
+                tipoAtividade,
+                localCardio
+            );
+        }
+    );
+}
+
+function mostrarFormularioCardio(
+    tipoAtividade,
+    localAtividade
+) {
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+            <h2>${tipoAtividade}</h2>
+
+            <p>
+                Local: ${localAtividade}
+            </p>
+
+            <label>Tempo em minutos:</label>
+            <input
+                type="number"
+                id="tempoCardio">
+
+            <label>Distância em km:</label>
+            <input
+                type="number"
+                id="distanciaCardio"
+                step="0.01">
+
+            <label>Observações:</label>
+            <input
+                type="text"
+                id="observacoesCardio">
+
+            <br><br>
+
+            <button id="btnSalvarCardio">
+                Salvar Cardio
+            </button>
+        </div>
+    `;
+}
+
 function mostrarEstatisticas() {
 
     const historico =
@@ -914,6 +1020,18 @@ function mostrarEstatisticas() {
 
     const segundos =
         totalSegundos % 60;
+
+    historicoTreinosDiv.classList.remove(
+        "oculto"
+    );
+
+    limparDestaqueTreinos();
+
+    limparDestaqueNavegacao();
+
+    btnEstatisticas.classList.add(
+        "treino-atual"
+    );
 
     conteudoTreino.innerHTML = `
         <div class="resumo-final">
@@ -1090,6 +1208,14 @@ function mostrarHistorico(filtro = "") {
     }
 
     historicoTreinosDiv.innerHTML = html;
+
+    limparDestaqueTreinos();
+
+    limparDestaqueNavegacao();
+
+    btnHistorico.classList.add(
+        "treino-atual"
+    );
 
     historicoTreinosDiv.classList.remove(
         "oculto"
@@ -1552,6 +1678,37 @@ console.log("Treinos carregados:", treinos);
 
 const listaTreinos = document.getElementById("listaTreinos");
 
+function limparDestaqueTreinos() {
+
+    const botoesTreino =
+        listaTreinos.querySelectorAll("button");
+
+    for (let botao of botoesTreino) {
+
+        botao.classList.remove(
+            "treino-sugerido"
+        );
+        
+        botao.classList.remove(
+            "treino-atual"
+        );
+    }
+}
+
+function limparDestaqueNavegacao() {
+    const botoesNavegacao =
+        document.querySelectorAll(
+            ".btn-navegacao"
+        );
+
+    for (let botao of botoesNavegacao) {
+
+        botao.classList.remove(
+            "treino-atual"
+        );
+    }
+}
+
 function criarBotoesTreinos() {
     
     listaTreinos.innerHTML = "";
@@ -1618,19 +1775,7 @@ function criarBotoesTreinos() {
                     inicioTreino = new Date();
                 }
 
-                const botoesTreino =
-                    listaTreinos.querySelectorAll("button");
-
-                for (let botaoTreino of botoesTreino) {
-
-                    botaoTreino.classList.remove(
-                        "treino-sugerido"
-                    );
-
-                    botaoTreino.classList.remove(
-                        "treino-atual"
-                    );
-                }
+                limparDestaqueTreinos();
 
                 botao.classList.add(
                     "treino-atual"
@@ -1677,6 +1822,18 @@ const btnHistorico =
 const btnEstatisticas =
     document.getElementById("btnEstatisticas");
 
+const btnCaminhada =
+    document.getElementById("btnCaminhada");
+
+const btnCorrida =
+    document.getElementById("btnCorrida");
+
+const btnBicicleta =
+    document.getElementById("btnBicicleta");
+
+const btnCardio =
+    document.getElementById("btnCardio");
+
 const btnExportarBackup =
     document.getElementById(
         "btnExportarBackup"
@@ -1708,6 +1865,30 @@ btnEstatisticas.addEventListener(
     "click",
     mostrarEstatisticas
 )
+
+btnCorrida.addEventListener(
+    "click",
+    function() {
+
+        mostrarTelaCardio("Corrida");
+    }
+);
+
+btnCaminhada.addEventListener(
+    "click",
+    function() {
+
+        mostrarTelaCardio("Caminhada");
+    }
+);
+
+btnBicicleta.addEventListener(
+    "click",
+    function() {
+
+        mostrarTelaCardio("Bicicleta");
+    }
+);
 
 btnExportarBackup.addEventListener(
     "click",
