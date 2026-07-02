@@ -951,6 +951,55 @@ function mostrarFormularioCardio(
     localAtividade
 ) {
 
+    let camposExtras = "";
+
+    if (
+        tipoAtividade === "Corrida" &&
+        localAtividade === "Esteira"
+    ) {
+
+        camposExtras = `
+            <label>Velocidade média:</label>
+            <input
+                type="number"
+                id="velocidadeCardio"
+                step="0.1">
+
+            <label>Inclinação:</label>
+            <input
+                type="number"
+                id="inclinacaoCardio"
+                step="0.1">
+        `;
+    }
+
+    if (
+        tipoAtividade === "Caminhada" &&
+        localAtividade === "Esteira"
+    ) {
+
+        camposExtras = `
+            <label>Inclinação:</label>
+            <input
+                type="number"
+                id="inclinacaoCardio"
+                step="0.1">
+        `;
+    }
+
+    if (
+        tipoAtividade === "Bicicleta" &&
+        localAtividade === "Ergométrica"
+    ) {
+
+        camposExtras = `
+            <label>Resistência:</label>
+            <input
+                type="number"
+                id="resistenciaCardio">
+        `;
+    }
+
     conteudoTreino.innerHTML = `
         <div class="resumo-final">
             <h2>${tipoAtividade}</h2>
@@ -959,16 +1008,42 @@ function mostrarFormularioCardio(
                 Local: ${localAtividade}
             </p>
 
-            <label>Tempo em minutos:</label>
-            <input
-                type="number"
-                id="tempoCardio">
+            <label>Tempo:</label>
+
+            <div class="tempo-cardio">
+
+                <input
+                    type="number"
+                    id="horasCardio"
+                    min="0"
+                    value="0"
+                    placeholder="Horas">
+
+                <input
+                    type="number"
+                    id="minutosCardio"
+                    min="0"
+                    max="59"
+                    value="0"
+                    placeholder="Min">
+
+                <input
+                    type="number"
+                    id="segundosCardio"
+                    min="0"
+                    max="59"
+                    value="0"
+                    placeholder="Seg">
+
+            </div>
 
             <label>Distância em km:</label>
             <input
                 type="number"
                 id="distanciaCardio"
                 step="0.01">
+
+            ${camposExtras}
 
             <label>Observações:</label>
             <input
@@ -982,46 +1057,220 @@ function mostrarFormularioCardio(
             </button>
         </div>
     `;
+    
+        const btnSalvarCardio =
+            document.getElementById("btnSalvarCardio");
+
+        btnSalvarCardio.addEventListener(
+            "click",
+            function() {
+
+                const horas =
+                    Number(
+                        document.getElementById("horasCardio").value
+                    ) || 0;
+
+                const minutos =
+                    Number(
+                        document.getElementById("minutosCardio").value
+                    ) || 0;
+
+                const segundos =
+                    Number(
+                        document.getElementById("segundosCardio").value
+                    ) || 0;
+
+                const distancia =
+                    Number(
+                        document.getElementById("distanciaCardio").value
+                    ) || 0;
+
+                const observacoes =
+                    document.getElementById("observacoesCardio").value;
+
+                const velocidade =
+                    document.getElementById("velocidadeCardio")?.value || null;
+
+                const inclinacao =
+                    document.getElementById("inclinacaoCardio")?.value || null;
+
+                const resistencia =
+                    document.getElementById("resistenciaCardio")?.value || null;
+
+                const duracaoSegundos =
+                    (horas * 3600) +
+                    (minutos * 60) +
+                    segundos;
+
+                const historicoCardioSalvo =
+                    localStorage.getItem(
+                        "historicoCardio"
+                    );
+
+                let historicoCardio = [];
+
+                if (historicoCardioSalvo) {
+
+                    historicoCardio =
+                        JSON.parse(
+                            historicoCardioSalvo
+                        );
+                }
+
+                const registroCardio = {
+
+                    data: new Date().toLocaleString(
+                        "pt-BR"
+                    ),
+
+                    tipo: tipoAtividade,
+
+                    local: localAtividade,
+
+                    duracaoSegundos: duracaoSegundos,
+
+                    distancia: distancia,
+
+                    velocidade: velocidade,
+
+                    inclinacao: inclinacao,
+
+                    resistencia: resistencia,
+
+                    observacoes: observacoes
+
+                };
+
+                historicoCardio.push(
+                    registroCardio
+                );
+
+                localStorage.setItem(
+                    "historicoCardio",
+                    JSON.stringify(
+                        historicoCardio
+                    )
+                );
+
+                alert(
+                    "Atividade salva com sucesso!"
+                );
+
+                mostrarResumoCardio(
+                    registroCardio
+                );
+            }
+        );
+}
+
+function mostrarResumoCardio(registroCardio) {
+
+    const minutos =
+        Math.floor(
+            registroCardio.duracaoSegundos / 60
+        );
+
+    const segundos =
+        registroCardio.duracaoSegundos % 60;
+
+    const ritmoSegundosPorKm =
+        registroCardio.distancia > 0
+            ? Math.round(
+                registroCardio.duracaoSegundos /
+                registroCardio.distancia
+            )
+            : 0;
+
+    const ritmoMinutos =
+        Math.floor(
+            ritmoSegundosPorKm / 60
+        );
+
+    const ritmoSegundos =
+        ritmoSegundosPorKm % 60;
+
+    let informacoesExtras = "";
+
+        if (registroCardio.velocidade) {
+
+            informacoesExtras += `
+                <p>
+                    ⚡ Velocidade: ${registroCardio.velocidade} km/h
+                </p>
+            `;
+        }
+
+        if (registroCardio.inclinacao) {
+
+            informacoesExtras += `
+                <p>
+                    ⛰ Inclinação: ${registroCardio.inclinacao}%
+                </p>
+            `;
+        }
+
+        if (registroCardio.resistencia) {
+
+            informacoesExtras += `
+                <p>
+                    ⚙ Resistência: ${registroCardio.resistencia}
+                </p>
+            `;
+        }
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+            <h2>✅ ${registroCardio.tipo} concluída</h2>
+
+            <p>
+                📅 ${registroCardio.data}
+            </p>
+
+            <p>
+                📍 Local: ${registroCardio.local}
+            </p>
+
+            <p>
+                ⏱ Tempo: ${minutos}min ${segundos}s
+            </p>
+
+            <p>
+                📏 Distância: ${registroCardio.distancia} km
+            </p>
+
+            ${informacoesExtras}
+
+            <p>
+                🔥 Ritmo médio: ${ritmoMinutos}min ${ritmoSegundos}s/km
+            </p>
+
+            <button id="btnVoltarInicioCardio">
+                Tela Inicial
+            </button>
+        </div>
+    `;
+
+    const btnVoltarInicioCardio =
+        document.getElementById(
+            "btnVoltarInicioCardio"
+        );
+
+    btnVoltarInicioCardio.addEventListener(
+        "click",
+        function() {
+
+            conteudoTreino.innerHTML = "";
+
+            limparDestaqueNavegacao();
+
+            criarBotoesTreinos();
+        }
+    );
 }
 
 function mostrarEstatisticas() {
 
-    const historico =
-        JSON.parse(
-            localStorage.getItem("historicoTreinos")
-        ) || [];
-
-    let totalTreinos =
-        historico.length;
-
-    let totalSegundos = 0;
-
-    let totalSeries = 0;
-
-    for (let registro of historico) {
-
-        totalSegundos +=
-            registro.duracaoSegundos || 0;
-
-        for (let exercicio of registro.exercicios) {
-
-            totalSeries +=
-                exercicio.seriesRealizadas || 0;
-        }
-    }
-
-    const horas =
-        Math.floor(totalSegundos / 3600);
-
-    const minutos =
-        Math.floor(
-            (totalSegundos % 3600) / 60
-        );
-
-    const segundos =
-        totalSegundos % 60;
-
-    historicoTreinosDiv.classList.remove(
+    historicoTreinosDiv.classList.add(
         "oculto"
     );
 
@@ -1037,22 +1286,518 @@ function mostrarEstatisticas() {
         <div class="resumo-final">
             <h2>📊 Estatísticas</h2>
 
-            <p>
-                🏋️ Treinos realizados: ${totalTreinos}
-            </p>
+            <button id="btnEstatisticasGeral">
+                📈 Geral
+            </button>
 
-            <p>
-                ⏱ Tempo total treinado: ${horas}h ${minutos}min ${segundos}s
-            </p>
+            <button id="btnEstatisticasMusculacao">
+                🏋️ Musculação
+            </button>
 
-            <p>
-                🔥 Séries realizadas: ${totalSeries}
-            </p>
+            <button id="btnEstatisticasCardio">
+                🏃 Cardio
+            </button>
         </div>
     `;
 
+    const btnEstatisticasGeral =
+        document.getElementById("btnEstatisticasGeral");
+
+    btnEstatisticasGeral.addEventListener(
+        "click",
+        mostrarEstatisticasGeral
+    );
+
+    const btnEstatisticasMusculacao =
+        document.getElementById(
+            "btnEstatisticasMusculacao"
+        );
+
+    btnEstatisticasMusculacao.addEventListener(
+        "click",
+        mostrarEstatisticasMusculacao
+    );
+
+    const btnEstatisticasCardio =
+        document.getElementById(
+            "btnEstatisticasCardio"
+        );
+
+    btnEstatisticasCardio.addEventListener(
+        "click",
+        mostrarEstatisticasCardio
+    );
+}
+
+function mostrarEstatisticasGeral() {
+
+    const historicoMusculacao =
+        JSON.parse(
+            localStorage.getItem("historicoTreinos")
+        ) || [];
+
+    const historicoCardio =
+        JSON.parse(
+            localStorage.getItem("historicoCardio")
+        ) || [];
+
+    let tempoMusculacaoSegundos = 0;
+
+    let seriesMusculacao = 0;
+
+    let totalCorridas = 0;
+
+    let totalCaminhadas = 0;
+
+    let totalBicicletas = 0;
+
+    for (let registro of historicoMusculacao) {
+
+        tempoMusculacaoSegundos +=
+            registro.duracaoSegundos || 0;
+
+        for (let exercicio of registro.exercicios) {
+
+            seriesMusculacao +=
+                exercicio.seriesRealizadas || 0;
+        }
+    }
+
+    let tempoCardioSegundos = 0;
+    let distanciaCardio = 0;
+
+    for (let registro of historicoCardio) {
+
+        tempoCardioSegundos +=
+            registro.duracaoSegundos || 0;
+
+        distanciaCardio +=
+            registro.distancia || 0;
+
+        if (registro.tipo === "Corrida") {
+
+            totalCorridas++;
+
+        } else if (
+            registro.tipo === "Caminhada"
+        ) {
+
+            totalCaminhadas++;
+
+        } else if (
+            registro.tipo === "Bicicleta"
+        ) {
+
+            totalBicicletas++;
+        }
+    }
+
+    const tempoTotalSegundos =
+        tempoMusculacaoSegundos +
+        tempoCardioSegundos;
+
+    const horas =
+        Math.floor(
+            tempoTotalSegundos / 3600
+        );
+
+    const minutos =
+        Math.floor(
+            (tempoTotalSegundos % 3600) / 60
+        );
+
+    const segundos =
+        tempoTotalSegundos % 60;
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+            <h2>📈 Estatísticas Gerais</h2>
+
+            <p>
+                🏋️ Treinos de musculação: ${historicoMusculacao.length}
+            </p>
+
+            <p>
+                🏃 Cardio:
+                ${historicoCardio.length}
+            </p>
+
+            <p>
+                🏃 Corridas:
+                ${totalCorridas}
+            </p>
+
+            <p>
+                🚶 Caminhadas:
+                ${totalCaminhadas}
+            </p>
+
+            <p>
+                🚴 Bicicletas:
+                ${totalBicicletas}
+            </p>
+
+            <p>
+                ⏱ Tempo total: ${horas}h ${minutos}min ${segundos}s
+            </p>
+
+            <p>
+                🔥 Séries de musculação: ${seriesMusculacao}
+            </p>
+
+            <p>
+                📏 Distância total cardio: ${distanciaCardio.toFixed(2)} km
+            </p>
+        </div>
+    `;
+}
+
+function mostrarEstatisticasMusculacao() {
+
+    const historico =
+        JSON.parse(
+            localStorage.getItem(
+                "historicoTreinos"
+            )
+        ) || [];
+
+    let tempoSegundos = 0;
+
+    let totalSeries = 0;
+
+    let totalCarga = 0;
+
+    let quantidadeCargas = 0;
+
+    for (let treino of historico) {
+
+        tempoSegundos +=
+            treino.duracaoSegundos || 0;
+
+        for (let exercicio of treino.exercicios) {
+
+            totalSeries +=
+                exercicio.seriesRealizadas || 0;
+
+            if (
+                exercicio.cargaAtual &&
+                !isNaN(exercicio.cargaAtual)
+            ) {
+
+                totalCarga +=
+                    Number(
+                        exercicio.cargaAtual
+                    );
+
+                quantidadeCargas++;
+            }
+        }
+    }
+
+    const horas =
+        Math.floor(
+            tempoSegundos / 3600
+        );
+
+    const minutos =
+        Math.floor(
+            (tempoSegundos % 3600) / 60
+        );
+
+    const mediaCarga =
+        quantidadeCargas > 0
+            ? (
+                totalCarga /
+                quantidadeCargas
+            ).toFixed(1)
+            : 0;
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+
+            <h2>
+                🏋️ Estatísticas da Musculação
+            </h2>
+
+            <p>
+                💪 Treinos realizados:
+                ${historico.length}
+            </p>
+
+            <p>
+                🔥 Séries realizadas:
+                ${totalSeries}
+            </p>
+
+            <p>
+                ⏱ Tempo total:
+                ${horas}h ${minutos}min
+            </p>
+
+            <p>
+                🏋️ Média das cargas:
+                ${mediaCarga} kg
+            </p>
+
+        </div>
+    `;
+}
+
+function mostrarEstatisticasCardio() {
+
+    const historicoCardio =
+        JSON.parse(
+            localStorage.getItem("historicoCardio")
+        ) || [];
+
+    let tempoSegundos = 0;
+    let distanciaTotal = 0;
+
+    let corridas = 0;
+    let caminhadas = 0;
+    let bicicletas = 0;
+    let distanciaCorridas = 0;
+    let distanciaCaminhadas = 0;
+    let distanciaBicicletas = 0;
+    let melhorRitmoCorrida = null;
+    let melhorRitmoCaminhada = null;
+
+    for (let registro of historicoCardio) {
+
+        tempoSegundos +=
+            registro.duracaoSegundos || 0;
+
+        distanciaTotal +=
+            registro.distancia || 0;
+
+        if (registro.tipo === "Corrida") {
+
+            corridas++;
+
+            distanciaCorridas +=
+                registro.distancia || 0;
+        }
+
+        if (registro.tipo === "Caminhada") {
+
+            caminhadas++;
+
+            distanciaCaminhadas +=
+                registro.distancia || 0;
+        }
+
+        if (registro.tipo === "Bicicleta") {
+
+            bicicletas++;
+
+            distanciaBicicletas +=
+                registro.distancia || 0;
+        }
+
+        if (
+            registro.distancia > 0 &&
+            registro.duracaoSegundos > 0
+        ) {
+
+            const ritmoAtual =
+                registro.duracaoSegundos /
+                registro.distancia;
+
+            if (registro.tipo === "Corrida") {
+
+                if (
+                    melhorRitmoCorrida === null ||
+                    ritmoAtual < melhorRitmoCorrida
+                ) {
+
+                    melhorRitmoCorrida = ritmoAtual;
+                }
+            }
+
+            if (registro.tipo === "Caminhada") {
+
+                if (
+                    melhorRitmoCaminhada === null ||
+                    ritmoAtual < melhorRitmoCaminhada
+                ) {
+
+                    melhorRitmoCaminhada = ritmoAtual;
+                }
+            }
+        }
+    }
+
+    const horas =
+        Math.floor(tempoSegundos / 3600);
+
+    const minutos =
+        Math.floor(
+            (tempoSegundos % 3600) / 60
+        );
+
+    const segundos =
+        tempoSegundos % 60;
+
+    const ritmoMedioSegundosPorKm =
+        distanciaTotal > 0
+            ? Math.round(
+                tempoSegundos / distanciaTotal
+            )
+            : 0;
+
+    const ritmoMedioMinutos =
+        Math.floor(
+            ritmoMedioSegundosPorKm / 60
+        );
+
+    const ritmoMedioSegundos =
+        ritmoMedioSegundosPorKm % 60;
+
+    const melhorRitmoCorridaMinutos =
+    melhorRitmoCorrida !== null
+        ? Math.floor(melhorRitmoCorrida / 60)
+        : 0;
+
+    const melhorRitmoCorridaSegundos =
+        melhorRitmoCorrida !== null
+            ? Math.round(melhorRitmoCorrida % 60)
+            : 0;
+
+    const melhorRitmoCaminhadaMinutos =
+        melhorRitmoCaminhada !== null
+            ? Math.floor(melhorRitmoCaminhada / 60)
+            : 0;
+
+    const melhorRitmoCaminhadaSegundos =
+        melhorRitmoCaminhada !== null
+            ? Math.round(melhorRitmoCaminhada % 60)
+            : 0;
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+
+            <h2>🏃 Estatísticas do Cardio</h2>
+
+            <p>
+                🏃 Atividades realizadas:
+                ${historicoCardio.length}
+            </p>
+
+            <p>
+                🚶 Caminhadas:
+                ${caminhadas}
+                (${distanciaCaminhadas.toFixed(2)} km)
+            </p>
+
+            <p>
+                🏃 Corridas:
+                ${corridas}
+                (${distanciaCorridas.toFixed(2)} km)
+            </p>
+
+            <p>
+                🚴 Bicicletas:
+                ${bicicletas}
+                (${distanciaBicicletas.toFixed(2)} km)
+            </p>
+
+            <p>
+                ⏱ Tempo total:
+                ${horas}h ${minutos}min ${segundos}s
+            </p>
+
+            <p>
+                📏 Distância total:
+                ${distanciaTotal.toFixed(2)} km
+            </p>
+
+            <p>
+                🔥 Ritmo médio:
+                ${ritmoMedioMinutos}min ${ritmoMedioSegundos}s/km
+            </p>
+
+            <p>
+                🏆 Melhor ritmo corrida:
+                ${melhorRitmoCorridaMinutos}min ${melhorRitmoCorridaSegundos}s/km
+            </p>
+
+            <p>
+                🏆 Melhor ritmo caminhada:
+                ${melhorRitmoCaminhadaMinutos}min ${melhorRitmoCaminhadaSegundos}s/km
+            </p>
+
+        </div>
+    `;
+}
+
+function mostrarMenuHistorico() {
+
     historicoTreinosDiv.classList.add(
         "oculto"
+    );
+
+    limparDestaqueTreinos();
+
+    limparDestaqueNavegacao();
+
+    btnHistorico.classList.add(
+        "treino-atual"
+    );
+
+    const historicoMusculacao =
+        JSON.parse(
+            localStorage.getItem("historicoTreinos")
+        ) || [];
+
+    const historicoCardio =
+        JSON.parse(
+            localStorage.getItem("historicoCardio")
+        ) || [];
+
+    const totalGeral =
+        historicoMusculacao.length +
+        historicoCardio.length;
+
+    conteudoTreino.innerHTML = `
+        <div class="resumo-final">
+            <h2>📜 Histórico</h2>
+
+            <button id="btnHistoricoMusculacao">
+                🏋️ Musculação (${historicoMusculacao.length})
+            </button>
+
+            <button id="btnHistoricoCardio">
+                🏃 Cardio (${historicoCardio.length})
+            </button>
+        </div>
+    `;
+
+    const btnHistoricoMusculacao =
+        document.getElementById("btnHistoricoMusculacao");
+
+    btnHistoricoMusculacao.addEventListener(
+        "click",
+        function() {
+
+            quantidadeHistoricoVisivel = 10;
+
+            conteudoTreino.innerHTML = "";
+
+            mostrarHistorico("");
+        }
+    );
+
+    const btnHistoricoCardio =
+        document.getElementById(
+            "btnHistoricoCardio"
+        );
+
+    btnHistoricoCardio.addEventListener(
+        "click",
+        function() {
+
+            mostrarHistoricoCardio();
+        }
     );
 }
 
@@ -1318,6 +2063,105 @@ function mostrarHistorico(filtro = "") {
             }
         );
     }
+}
+
+function mostrarHistoricoCardio() {
+
+    const historicoCardio =
+        JSON.parse(
+            localStorage.getItem(
+                "historicoCardio"
+            )
+        ) || [];
+
+    let html = `
+        <h2>
+            🏃 Histórico Cardio
+            (${historicoCardio.length})
+        </h2>
+    `;
+
+    const historicoOrdenado =
+        historicoCardio.slice().reverse();
+
+    for (let registro of historicoOrdenado) {
+
+        const minutos =
+            Math.floor(
+                registro.duracaoSegundos / 60
+            );
+
+        const segundos =
+            registro.duracaoSegundos % 60;
+
+        let informacoesExtras = "";
+
+        if (registro.velocidade) {
+
+            informacoesExtras += `
+                <p>
+                    ⚡ Velocidade: ${registro.velocidade} km/h
+                </p>
+            `;
+        }
+
+        if (registro.inclinacao) {
+
+            informacoesExtras += `
+                <p>
+                    ⛰ Inclinação: ${registro.inclinacao}%
+                </p>
+            `;
+        }
+
+        if (registro.resistencia) {
+
+            informacoesExtras += `
+                <p>
+                    ⚙ Resistência: ${registro.resistencia}
+                </p>
+            `;
+        }
+
+        if (registro.observacoes) {
+
+            informacoesExtras += `
+                <p>
+                    📝 ${registro.observacoes}
+                </p>
+            `;
+        }
+
+        html += `
+            <div class="cartao-historico">
+
+                <h3>
+                    ${registro.tipo}
+                </h3>
+
+                <p>
+                    📅 ${registro.data}
+                </p>
+
+                <p>
+                    📍 ${registro.local}
+                </p>
+
+                <p>
+                    ⏱ ${minutos}min ${segundos}s
+                </p>
+
+                <p>
+                    📏 ${registro.distancia} km
+                </p>
+
+                ${informacoesExtras}
+
+            </div>
+        `;
+    }
+
+    conteudoTreino.innerHTML = html;
 }
 
 function exportarBackup() {
@@ -1855,9 +2699,10 @@ const historicoTreinosDiv =
 btnHistorico.addEventListener(
     "click",
     function() {
+
         quantidadeHistoricoVisivel = 10;
-        
-        mostrarHistorico("");
+
+        mostrarMenuHistorico();
     }
 );
 
