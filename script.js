@@ -195,8 +195,6 @@ function mostrarTreino(titulo, exercicios) {
         (seriesRealizadas / totalSeries) * 100
     );
 
-    console.log("Quantidade de exercícios:", exercicios.length);
-
     if (exercicios.length === 0) {
 
         conteudoTreino.innerHTML = `
@@ -261,12 +259,8 @@ function mostrarTreino(titulo, exercicios) {
     for (let botao of botoesDescanso) {
         botao.addEventListener("click", function() {
 
-            console.log("CLIQUE NO BOTÃO");
             const indice = Number(botao.dataset.indice);
             const exercicio = exercicios[indice];
-
-            console.log(exercicio);
-            console.log("Descanso:", exercicio.descanso)  
         
             const cartao = botao.closest(".cartao-exercicio");
             const barra = cartao.querySelector(".barra-progresso");
@@ -290,12 +284,8 @@ function mostrarTreino(titulo, exercicios) {
                         
             exercicio.cronometro = setInterval(function() {
 
-            console.log("Tempo:", tempo);
-
             if (tempo === 0) {
-                
-                console.log("DESCANSO FINALIZADO");
-
+               
                 clearInterval(exercicio.cronometro);
 
                 exercicio.cronometro = null;
@@ -329,8 +319,7 @@ function mostrarTreino(titulo, exercicios) {
 
     const botoesEditar = document.querySelectorAll(".btn-editarExercicio");
     const botoesMostrarGif = document.querySelectorAll(".btn-mostrarGif");
-    console.log("Botões editar:", botoesEditar.length);
-
+    
     const botoesExcluir = document.querySelectorAll(".btn-excluirExercicio");
 
     const botoesAumentarCarga =
@@ -346,10 +335,6 @@ function mostrarTreino(titulo, exercicios) {
     const inputsCarga =
         document.querySelectorAll(".input-carga");
     
-    console.log("Botões aumentar:",botoesAumentarCarga.length);
-
-    console.log("Botões diminuir:", botoesDiminuirCarga.length);
-
     for (let botao of botoesExcluir) {
         botao.addEventListener("click", function() {
 
@@ -374,20 +359,6 @@ function mostrarTreino(titulo, exercicios) {
             localStorage.setItem(
                 "treinos",
                 JSON.stringify(treinos)
-            );
-
-            console.log("Objeto treinos:");
-            console.log(treinos);
-
-            console.log("Treino atual:");
-            console.log(treinoAtual);
-
-            console.log("Treino selecionado:");
-            console.log(chaveTreinoAtual);
-
-            console.log(
-                "Treinos atualizados:",
-                localStorage.getItem("treinos")
             );
 
             mostrarTreino(
@@ -537,10 +508,6 @@ function mostrarTreino(titulo, exercicios) {
                     botaoDescanso.click();
                 }
             }
-
-            console.log(
-                exercicios[indice]
-            );
         }
     );
 }
@@ -678,8 +645,6 @@ function mostrarTreino(titulo, exercicios) {
             return;
         }
 
-        console.log("Antes:", treinoAtual);
-
         const treinoFinalizado = tituloAtual;
 
         const exerciciosFinalizados =
@@ -774,8 +739,6 @@ function mostrarTreino(titulo, exercicios) {
         for (let exercicio of treinoAtual) {
             exercicio.seriesRealizadas = 0;
         }
-
-        console.log("Depois:", treinoAtual);
 
         localStorage.setItem(
             chaveTreinoAtual,
@@ -1016,7 +979,6 @@ function mostrarFormularioCardio(
                     type="number"
                     id="horasCardio"
                     min="0"
-                    value="0"
                     placeholder="Horas">
 
                 <input
@@ -1024,7 +986,6 @@ function mostrarFormularioCardio(
                     id="minutosCardio"
                     min="0"
                     max="59"
-                    value="0"
                     placeholder="Min">
 
                 <input
@@ -1032,7 +993,6 @@ function mostrarFormularioCardio(
                     id="segundosCardio"
                     min="0"
                     max="59"
-                    value="0"
                     placeholder="Seg">
 
             </div>
@@ -1101,6 +1061,24 @@ function mostrarFormularioCardio(
                     (horas * 3600) +
                     (minutos * 60) +
                     segundos;
+
+                if (duracaoSegundos <= 0) {
+
+                    alert(
+                        "Informe o tempo da atividade."
+                    );
+
+                    return;
+                }
+
+                if (distancia <= 0) {
+
+                    alert(
+                        "Informe a distância da atividade."
+                    );
+
+                    return;
+                }
 
                 const historicoCardioSalvo =
                     localStorage.getItem(
@@ -1469,6 +1447,12 @@ function mostrarEstatisticasMusculacao() {
 
     let quantidadeCargas = 0;
 
+    let exerciciosRealizados = 0;
+
+    let maiorCarga = 0;
+
+    let nomeMaiorCarga = "";
+
     for (let treino of historico) {
 
         tempoSegundos +=
@@ -1478,6 +1462,11 @@ function mostrarEstatisticasMusculacao() {
 
             totalSeries +=
                 exercicio.seriesRealizadas || 0;
+
+        if (exercicio.seriesRealizadas > 0) {
+
+            exerciciosRealizados++;
+        }
 
             if (
                 exercicio.cargaAtual &&
@@ -1490,6 +1479,18 @@ function mostrarEstatisticasMusculacao() {
                     );
 
                 quantidadeCargas++;
+
+                if (
+                    Number(exercicio.cargaAtual) >
+                    maiorCarga
+                ) {
+
+                    maiorCarga =
+                        Number(exercicio.cargaAtual);
+
+                    nomeMaiorCarga =
+                        exercicio.nome;
+                }
             }
         }
     }
@@ -1530,6 +1531,11 @@ function mostrarEstatisticasMusculacao() {
             </p>
 
             <p>
+                💪 Exercícios realizados:
+                ${exerciciosRealizados}
+            </p>
+
+            <p>
                 ⏱ Tempo total:
                 ${horas}h ${minutos}min
             </p>
@@ -1537,6 +1543,11 @@ function mostrarEstatisticasMusculacao() {
             <p>
                 🏋️ Média das cargas:
                 ${mediaCarga} kg
+            </p>
+
+            <p>
+                🏆 Maior carga:
+                ${maiorCarga > 0 ? maiorCarga + " kg - " + nomeMaiorCarga : "Sem dados"}
             </p>
 
         </div>
@@ -1550,128 +1561,146 @@ function mostrarEstatisticasCardio() {
             localStorage.getItem("historicoCardio")
         ) || [];
 
-    let tempoSegundos = 0;
+    let tempoTotal = 0;
     let distanciaTotal = 0;
 
-    let corridas = 0;
-    let caminhadas = 0;
-    let bicicletas = 0;
-    let distanciaCorridas = 0;
-    let distanciaCaminhadas = 0;
-    let distanciaBicicletas = 0;
-    let melhorRitmoCorrida = null;
-    let melhorRitmoCaminhada = null;
+    const dados = {
+        Corrida: {
+            quantidade: 0,
+            distancia: 0,
+            tempo: 0,
+            melhorRitmo: null,
+            maiorDistancia: 0,
+            maiorDuracao: 0
+        },
+
+        Caminhada: {
+            quantidade: 0,
+            distancia: 0,
+            tempo: 0,
+            melhorRitmo: null,
+            maiorDistancia: 0,
+            maiorDuracao: 0
+        },
+
+        Bicicleta: {
+            quantidade: 0,
+            distancia: 0,
+            tempo: 0,
+            maiorDistancia: 0,
+            maiorDuracao: 0,
+            maiorVelocidade: 0,
+            maiorResistencia: 0
+        }
+    };
 
     for (let registro of historicoCardio) {
 
-        tempoSegundos +=
+        tempoTotal +=
             registro.duracaoSegundos || 0;
 
         distanciaTotal +=
             registro.distancia || 0;
 
-        if (registro.tipo === "Corrida") {
+        const tipo =
+            registro.tipo;
 
-            corridas++;
-
-            distanciaCorridas +=
-                registro.distancia || 0;
+        if (!dados[tipo]) {
+            continue;
         }
 
-        if (registro.tipo === "Caminhada") {
+        dados[tipo].quantidade++;
 
-            caminhadas++;
+        dados[tipo].distancia +=
+            registro.distancia || 0;
 
-            distanciaCaminhadas +=
-                registro.distancia || 0;
-        }
+        dados[tipo].tempo +=
+            registro.duracaoSegundos || 0;
 
-        if (registro.tipo === "Bicicleta") {
-
-            bicicletas++;
-
-            distanciaBicicletas +=
-                registro.distancia || 0;
+        if (
+            registro.distancia >
+            dados[tipo].maiorDistancia
+        ) {
+            dados[tipo].maiorDistancia =
+                registro.distancia;
         }
 
         if (
+            registro.duracaoSegundos >
+            dados[tipo].maiorDuracao
+        ) {
+            dados[tipo].maiorDuracao =
+                registro.duracaoSegundos;
+        }
+
+        if (
+            tipo !== "Bicicleta" &&
             registro.distancia > 0 &&
             registro.duracaoSegundos > 0
         ) {
 
-            const ritmoAtual =
+            const ritmo =
                 registro.duracaoSegundos /
                 registro.distancia;
 
-            if (registro.tipo === "Corrida") {
+            if (
+                dados[tipo].melhorRitmo === null ||
+                ritmo < dados[tipo].melhorRitmo
+            ) {
+                dados[tipo].melhorRitmo = ritmo;
+            }
+        }
 
-                if (
-                    melhorRitmoCorrida === null ||
-                    ritmoAtual < melhorRitmoCorrida
-                ) {
+        if (tipo === "Bicicleta") {
 
-                    melhorRitmoCorrida = ritmoAtual;
-                }
+            if (
+                Number(registro.velocidade) >
+                dados.Bicicleta.maiorVelocidade
+            ) {
+                dados.Bicicleta.maiorVelocidade =
+                    Number(registro.velocidade);
             }
 
-            if (registro.tipo === "Caminhada") {
-
-                if (
-                    melhorRitmoCaminhada === null ||
-                    ritmoAtual < melhorRitmoCaminhada
-                ) {
-
-                    melhorRitmoCaminhada = ritmoAtual;
-                }
+            if (
+                Number(registro.resistencia) >
+                dados.Bicicleta.maiorResistencia
+            ) {
+                dados.Bicicleta.maiorResistencia =
+                    Number(registro.resistencia);
             }
         }
     }
 
-    const horas =
-        Math.floor(tempoSegundos / 3600);
+    function formatarTempo(segundosTotais) {
 
-    const minutos =
-        Math.floor(
-            (tempoSegundos % 3600) / 60
-        );
+        const horas =
+            Math.floor(segundosTotais / 3600);
 
-    const segundos =
-        tempoSegundos % 60;
+        const minutos =
+            Math.floor(
+                (segundosTotais % 3600) / 60
+            );
 
-    const ritmoMedioSegundosPorKm =
-        distanciaTotal > 0
-            ? Math.round(
-                tempoSegundos / distanciaTotal
-            )
-            : 0;
+        const segundos =
+            segundosTotais % 60;
 
-    const ritmoMedioMinutos =
-        Math.floor(
-            ritmoMedioSegundosPorKm / 60
-        );
+        return `${horas}h ${minutos}min ${segundos}s`;
+    }
 
-    const ritmoMedioSegundos =
-        ritmoMedioSegundosPorKm % 60;
+    function formatarRitmo(ritmo) {
 
-    const melhorRitmoCorridaMinutos =
-    melhorRitmoCorrida !== null
-        ? Math.floor(melhorRitmoCorrida / 60)
-        : 0;
+        if (ritmo === null) {
+            return "Sem dados";
+        }
 
-    const melhorRitmoCorridaSegundos =
-        melhorRitmoCorrida !== null
-            ? Math.round(melhorRitmoCorrida % 60)
-            : 0;
+        const minutos =
+            Math.floor(ritmo / 60);
 
-    const melhorRitmoCaminhadaMinutos =
-        melhorRitmoCaminhada !== null
-            ? Math.floor(melhorRitmoCaminhada / 60)
-            : 0;
+        const segundos =
+            Math.round(ritmo % 60);
 
-    const melhorRitmoCaminhadaSegundos =
-        melhorRitmoCaminhada !== null
-            ? Math.round(melhorRitmoCaminhada % 60)
-            : 0;
+        return `${minutos}min ${segundos}s/km`;
+    }
 
     conteudoTreino.innerHTML = `
         <div class="resumo-final">
@@ -1684,26 +1713,8 @@ function mostrarEstatisticasCardio() {
             </p>
 
             <p>
-                🚶 Caminhadas:
-                ${caminhadas}
-                (${distanciaCaminhadas.toFixed(2)} km)
-            </p>
-
-            <p>
-                🏃 Corridas:
-                ${corridas}
-                (${distanciaCorridas.toFixed(2)} km)
-            </p>
-
-            <p>
-                🚴 Bicicletas:
-                ${bicicletas}
-                (${distanciaBicicletas.toFixed(2)} km)
-            </p>
-
-            <p>
                 ⏱ Tempo total:
-                ${horas}h ${minutos}min ${segundos}s
+                ${formatarTempo(tempoTotal)}
             </p>
 
             <p>
@@ -1711,19 +1722,53 @@ function mostrarEstatisticasCardio() {
                 ${distanciaTotal.toFixed(2)} km
             </p>
 
+            <hr>
+
+            <h3>🏃 Corridas</h3>
+
+            <p>Quantidade: ${dados.Corrida.quantidade}</p>
+            <p>Distância: ${dados.Corrida.distancia.toFixed(2)} km</p>
+            <p>Tempo: ${formatarTempo(dados.Corrida.tempo)}</p>
+            <p>Melhor ritmo: ${formatarRitmo(dados.Corrida.melhorRitmo)}</p>
+            <p>Maior distância: ${dados.Corrida.maiorDistancia.toFixed(2)} km</p>
+            <p>Maior duração: ${formatarTempo(dados.Corrida.maiorDuracao)}</p>
+
+            <hr>
+
+            <h3>🚶 Caminhadas</h3>
+
+            <p>Quantidade: ${dados.Caminhada.quantidade}</p>
+            <p>Distância: ${dados.Caminhada.distancia.toFixed(2)} km</p>
+            <p>Tempo: ${formatarTempo(dados.Caminhada.tempo)}</p>
+            <p>Melhor ritmo: ${formatarRitmo(dados.Caminhada.melhorRitmo)}</p>
+            <p>Maior distância: ${dados.Caminhada.maiorDistancia.toFixed(2)} km</p>
+            <p>Maior duração: ${formatarTempo(dados.Caminhada.maiorDuracao)}</p>
+
+            <hr>
+
+            <h3>🚴 Bicicletas</h3>
+
+            <p>Quantidade: ${dados.Bicicleta.quantidade}</p>
+            <p>Distância: ${dados.Bicicleta.distancia.toFixed(2)} km</p>
+            <p>Tempo: ${formatarTempo(dados.Bicicleta.tempo)}</p>
+            <p>Maior distância: ${dados.Bicicleta.maiorDistancia.toFixed(2)} km</p>
+            <p>Maior duração: ${formatarTempo(dados.Bicicleta.maiorDuracao)}</p>
             <p>
-                🔥 Ritmo médio:
-                ${ritmoMedioMinutos}min ${ritmoMedioSegundos}s/km
+                Maior velocidade:
+                ${
+                    dados.Bicicleta.maiorVelocidade > 0
+                        ? dados.Bicicleta.maiorVelocidade + " km/h"
+                        : "Sem dados"
+                }
             </p>
 
             <p>
-                🏆 Melhor ritmo corrida:
-                ${melhorRitmoCorridaMinutos}min ${melhorRitmoCorridaSegundos}s/km
-            </p>
-
-            <p>
-                🏆 Melhor ritmo caminhada:
-                ${melhorRitmoCaminhadaMinutos}min ${melhorRitmoCaminhadaSegundos}s/km
+                Maior resistência:
+                ${
+                    dados.Bicicleta.maiorResistencia > 0
+                        ? dados.Bicicleta.maiorResistencia
+                        : "Sem dados"
+                }
             </p>
 
         </div>
@@ -1849,17 +1894,6 @@ function mostrarHistorico(filtro = "") {
                         `)
                         .join(" ")}
                     `.toLowerCase();
-
-                console.log(
-                    "Filtro:",
-                    filtro,
-                    "| Registro:",
-                    registro.treino,
-                    "| Encontrou:",
-                    textoBusca.includes(
-                        filtro.toLowerCase()
-                    )
-                );
 
                 return textoBusca.includes(
                     filtro.toLowerCase()
@@ -2180,6 +2214,13 @@ function exportarBackup() {
                 )
             ),
 
+        historicoCardio:
+            JSON.parse(
+                localStorage.getItem(
+                    "historicoCardio"
+                )
+          ),
+
         evolucaoExercicios:
             JSON.parse(
                 localStorage.getItem(
@@ -2240,14 +2281,6 @@ function importarBackup(evento) {
                     e.target.result
                 );
             
-            console.log(
-                "Backup carregado:"
-            );
-
-            console.log(
-                dadosBackup
-            );
-
             localStorage.setItem(
                 "treinos",
                 JSON.stringify(
@@ -2259,6 +2292,13 @@ function importarBackup(evento) {
                 "historicoTreinos",
                 JSON.stringify(
                     dadosBackup.historicoTreinos
+                )
+            );
+
+            localStorage.setItem(
+                "historicoCardio",
+                JSON.stringify(
+                    dadosBackup.historicoCardio || []
                 )
             );
 
@@ -2512,13 +2552,7 @@ if (treinosSalvos) {
         treinos,
         JSON.parse(treinosSalvos)
     );
-
-    console.log(
-        "Treinos recuperados do localStorage"
-    );
 }
-
-console.log("Treinos carregados:", treinos);
 
 const listaTreinos = document.getElementById("listaTreinos");
 
@@ -2588,12 +2622,8 @@ function criarBotoesTreinos() {
         ];
     }
 
-    console.log(listaTreinos);
-
     for (let nomeTreino in treinos) {
 
-        console.log("Criado botão:", nomeTreino);
-        
         const botao = document.createElement("button");
 
         if (
@@ -2753,8 +2783,6 @@ inputImportarBackup.addEventListener(
     importarBackup
 );
 
-
-
 btnMostrarFormulario.addEventListener("click", function() {
 
     if (!chaveTreinoAtual) {
@@ -2798,6 +2826,25 @@ btnSalvarTreino.addEventListener(
 
             return;
         }
+
+        const treinoJaExiste =
+            Object.keys(treinos).some(
+                function(nomeExistente) {
+
+                    return nomeExistente.toLowerCase() ===
+                        nomeTreino.toLowerCase();
+                }
+            );
+
+        if (treinoJaExiste) {
+
+            alert(
+                "Já existe um treino com esse nome."
+            );
+
+            return;
+        }
+
         treinos[nomeTreino] = [];
 
         localStorage.setItem(
@@ -2806,16 +2853,6 @@ btnSalvarTreino.addEventListener(
         );
 
         criarBotoesTreinos();
-
-        console.log(
-            "Treino criado:",
-            nomeTreino
-        );
-        console.log(treinos);
-
-        console.log(
-            localStorage.getItem("treinos")
-        );
 
         formularioTreino.classList.add(
             "oculto"
@@ -2852,13 +2889,21 @@ const btnSalvarExercicio = document.getElementById("btnSalvarExercicio");
 
 btnSalvarExercicio.addEventListener("click", function() { 
 
-    const nome = document.getElementById("nomeExercicio").value;
-        if (!nome) {alert("Informe o nome do exercício.");
-            return;
-        }
+    const nome =
+        document.getElementById("nomeExercicio")
+            .value
+            .trim();
 
     const series = document.getElementById("seriesExercicio").value;
         if (!series) {alert("Informe a quantidade de séries.");
+            return;
+        }
+
+        if (Number(series) <= 0) {
+            alert(
+                "A quantidade de séries deve ser maior que zero."
+            );
+
             return;
         }
 
@@ -2874,11 +2919,36 @@ btnSalvarExercicio.addEventListener("click", function() {
             return;
         }
 
+    if (Number(descanso) <= 0) {
+        alert(
+            "O tempo de descanso deve ser maior que zero."
+        );
+
+        return;
+    }
+
+    const exercicioJaExiste =
+        treinoAtual.some(
+            function(exercicio, indice) {
+
+                return exercicio.nome.toLowerCase() ===
+                    nome.toLowerCase() &&
+                    indice !== indiceEdicao;
+            }
+        );
+
+    if (exercicioJaExiste) {
+
+        alert(
+            "Já existe um exercício com esse nome neste treino."
+        );
+
+        return;
+    }
+
     const gif = document.getElementById("gifExercicio").value;
 
     const video = document.getElementById("videoExercicio").value;
-
-    console.log("Valor digitado:", descanso);
 
     const novoExercicio = {
         nome: nome,
@@ -2891,15 +2961,6 @@ btnSalvarExercicio.addEventListener("click", function() {
         video: video,
         cronometro: null
     };
-
-    console.log(nome);
-    console.log(series);
-    console.log(repeticoes);
-    console.log(carga);
-    console.log(descanso);
-    console.log(gif);
-    console.log(video);
-    console.log(novoExercicio);
 
     if (indiceEdicao !== null) {
         
@@ -2915,25 +2976,9 @@ btnSalvarExercicio.addEventListener("click", function() {
 
     treinos[chaveTreinoAtual] = treinoAtual;
 
-    console.log("chaveTreinoAtual:", chaveTreinoAtual);
-
-    console.log("treinoAtual:");
-    console.log(treinoAtual);
-
-    console.log("treinos:");
-    console.log(treinos);
-
-    console.log("treinos[chaveTreinoAtual]:");
-    console.log(treinos[chaveTreinoAtual]);
-
     localStorage.setItem(
         "treinos",
         JSON.stringify(treinos)
-    );
-
-    console.log(
-        "salvo no localstorage:",
-        localStorage.getItem("treinos")
     );
 
     mostrarTreino(
@@ -2961,7 +3006,9 @@ btnSalvarExercicio.addEventListener("click", function() {
 });
 
 let tituloAtual = "";
+
 let treinoAtual = [];
+
 let chaveTreinoAtual = "";
 
 let temporizadorBuscaHistorico = null;
@@ -2973,30 +3020,3 @@ let cronometroTreino = null;
 let indiceEdicao = null;
 
 let quantidadeHistoricoVisivel = 10;
-
-/*
-console.log(botaoTreinoA);
-console.log(botaoTreinoB);
-console.log(botaoTreinoC);
-
-botaoTreinoA.addEventListener("click", function() {
-    tituloAtual = "Treino A";
-    treinoAtual = treinoA;
-    chaveTreinoAtual = "treinoA";
-    mostrarTreino("Treino A", treinoA);
-    
-});
-
-botaoTreinoB.addEventListener("click", function() {
-    tituloAtual = "Treino B";
-    treinoAtual = treinoB;
-    chaveTreinoAtual = "treinoB";
-    mostrarTreino("Treino B", treinoB);
-});
-
-botaoTreinoC.addEventListener("click", function() {
-    tituloAtual = "Treino C";
-    treinoAtual = treinoC;
-    chaveTreinoAtual = "treinoC";
-    mostrarTreino("Treino C", treinoC);
-});*/
