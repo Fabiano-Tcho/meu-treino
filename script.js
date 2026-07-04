@@ -146,26 +146,26 @@ function mostrarTreino(titulo, exercicios) {
                 <button
                     class="btn-descanso"
                     data-indice="${i}">
-                    Iniciar Descanso
+                    ⏱ Descanso
                 </button>
             
                 <button
                     class="btn-concluirSerie btn-sucesso"
                     data-indice=" ${i}"
                     ${concluido ? "disabled" : ""}>
-                    Concluir Série
+                    ✅ Série
                 </button>
 
                 <button
                     class="btn-editarExercicio btn-editar"
                     data-indice="${i}">
-                    Editar Exercício
+                    ✏️ Editar
                 </button>
 
                 <button
                     class="btn-excluirExercicio btn-excluir"
                     data-indice="${i}">
-                    Excluir Exercício
+                    🗑 Excluir
                 </button>                
             
             </div>
