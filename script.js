@@ -151,7 +151,7 @@ function mostrarTreino(titulo, exercicios) {
             
                 <button
                     class="btn-concluirSerie btn-sucesso"
-                    data-indice=" ${i}"
+                    data-indice="${i}"
                     ${concluido ? "disabled" : ""}>
                     ✅ Série
                 </button>

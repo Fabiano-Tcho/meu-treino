@@ -324,15 +324,30 @@ hr {
 }
 
 .cartao-exercicio button {
-
     min-height: 45px;
-
     min-width: 120px;
-
 }
 
 .cartao-exercicio button:active {
 
     transform: scale(0.95);
+}
 
+.controle-carga {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 18px;
+}
+
+.controle-carga .btn-diminuirCarga,
+.controle-carga .btn-aumentarCarga {
+    width: 54px;
+    min-width: 54px;
+    height: 44px;
+}
+
+.controle-carga .input-carga {
+    width: 80px;
+    height: 44px;
 }
