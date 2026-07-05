@@ -2909,13 +2909,20 @@ btnHome.addEventListener(
             "oculto"
         );
 
+        formularioTreino.classList.add(
+            "oculto"
+        );
+
+        formularioExercicio.classList.add(
+            "oculto"
+        );
+
         limparDestaqueTreinos();
 
         limparDestaqueNavegacao();
 
         criarBotoesTreinos();
     }
-
 );
 
 btnEstatisticas.addEventListener(
