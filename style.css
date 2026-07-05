@@ -328,3 +328,20 @@ button.treino-atual,
     border: none !important;
     box-shadow: 0 8px 20px rgba(52, 199, 89, 0.35) !important;
 }
+
+.campo-cardio {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.campo-cardio label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.campo-cardio input,
+.campo-cardio select {
+    width: 100%;
+    margin: 0;
+}

@@ -980,17 +980,21 @@ function mostrarFormularioCardio(
     ) {
 
         camposExtras = `
-            <label>Velocidade média:</label>
-            <input
-                type="number"
-                id="velocidadeCardio"
-                step="0.1">
+            <div class="campo-cardio">
+                <label>Velocidade média:</label>
+                <input
+                    type="number"
+                    id="velocidadeCardio"
+                    step="0.1">
+            </div>
 
-            <label>Inclinação:</label>
-            <input
-                type="number"
-                id="inclinacaoCardio"
-                step="0.1">
+            <div class="campo-cardio">
+                <label>Inclinação:</label>
+                <input
+                    type="number"
+                    id="inclinacaoCardio"
+                    step="0.1">
+            </div>
         `;
     }
 
@@ -1000,11 +1004,13 @@ function mostrarFormularioCardio(
     ) {
 
         camposExtras = `
-            <label>Inclinação:</label>
-            <input
-                type="number"
-                id="inclinacaoCardio"
-                step="0.1">
+            <div class="campo-cardio">
+                <label>Inclinação:</label>
+                <input
+                    type="number"
+                    id="inclinacaoCardio"
+                    step="0.1">
+            </div>
         `;
     }
 
@@ -1014,10 +1020,12 @@ function mostrarFormularioCardio(
     ) {
 
         camposExtras = `
-            <label>Resistência:</label>
-            <input
-                type="number"
-                id="resistenciaCardio">
+            <div class="campo-cardio">
+                <label>Resistência:</label>
+                <input
+                    type="number"
+                    id="resistenciaCardio">
+            </div>
         `;
     }
 
@@ -1029,174 +1037,180 @@ function mostrarFormularioCardio(
                 Local: ${localAtividade}
             </p>
 
-            <label>Tempo:</label>
+            <div class="campo-cardio">
+                <label>Tempo:</label>
 
-            <div class="tempo-cardio">
+                <div class="tempo-cardio">
 
-                <input
-                    type="number"
-                    id="horasCardio"
-                    min="0"
-                    placeholder="Horas">
+                    <input
+                        type="number"
+                        id="horasCardio"
+                        min="0"
+                        placeholder="Horas">
 
-                <input
-                    type="number"
-                    id="minutosCardio"
-                    min="0"
-                    max="59"
-                    placeholder="Min">
+                    <input
+                        type="number"
+                        id="minutosCardio"
+                        min="0"
+                        max="59"
+                        placeholder="Min">
 
-                <input
-                    type="number"
-                    id="segundosCardio"
-                    min="0"
-                    max="59"
-                    placeholder="Seg">
+                    <input
+                        type="number"
+                        id="segundosCardio"
+                        min="0"
+                        max="59"
+                        placeholder="Seg">
 
+                </div>
             </div>
 
-            <label>Distância em km:</label>
-            <input
-                type="number"
-                id="distanciaCardio"
-                step="0.01">
+            <div class="campo-cardio">
+                <label>Distância em km:</label>
+                <input
+                    type="number"
+                    id="distanciaCardio"
+                    step="0.01">
+            </div>
 
             ${camposExtras}
 
-            <label>Observações:</label>
-            <input
-                type="text"
-                id="observacoesCardio">
+            <div class="campo-cardio">
+                <label>Observações:</label>
+                <input
+                    type="text"
+                    id="observacoesCardio">
+            </div>
 
-            <br><br>
+            <br>
 
             <button id="btnSalvarCardio">
                 Salvar Cardio
             </button>
         </div>
     `;
-    
-        const btnSalvarCardio =
-            document.getElementById("btnSalvarCardio");
 
-        btnSalvarCardio.addEventListener(
-            "click",
-            function() {
+    const btnSalvarCardio =
+        document.getElementById("btnSalvarCardio");
 
-                const horas =
-                    Number(
-                        document.getElementById("horasCardio").value
-                    ) || 0;
+    btnSalvarCardio.addEventListener(
+        "click",
+        function() {
 
-                const minutos =
-                    Number(
-                        document.getElementById("minutosCardio").value
-                    ) || 0;
+            const horas =
+                Number(
+                    document.getElementById("horasCardio").value
+                ) || 0;
 
-                const segundos =
-                    Number(
-                        document.getElementById("segundosCardio").value
-                    ) || 0;
+            const minutos =
+                Number(
+                    document.getElementById("minutosCardio").value
+                ) || 0;
 
-                const distancia =
-                    Number(
-                        document.getElementById("distanciaCardio").value
-                    ) || 0;
+            const segundos =
+                Number(
+                    document.getElementById("segundosCardio").value
+                ) || 0;
 
-                const observacoes =
-                    document.getElementById("observacoesCardio").value;
+            const distancia =
+                Number(
+                    document.getElementById("distanciaCardio").value
+                ) || 0;
 
-                const velocidade =
-                    document.getElementById("velocidadeCardio")?.value || null;
+            const observacoes =
+                document.getElementById("observacoesCardio").value;
 
-                const inclinacao =
-                    document.getElementById("inclinacaoCardio")?.value || null;
+            const velocidade =
+                document.getElementById("velocidadeCardio")?.value || null;
 
-                const resistencia =
-                    document.getElementById("resistenciaCardio")?.value || null;
+            const inclinacao =
+                document.getElementById("inclinacaoCardio")?.value || null;
 
-                const duracaoSegundos =
-                    (horas * 3600) +
-                    (minutos * 60) +
-                    segundos;
+            const resistencia =
+                document.getElementById("resistenciaCardio")?.value || null;
 
-                if (duracaoSegundos <= 0) {
+            const duracaoSegundos =
+                (horas * 3600) +
+                (minutos * 60) +
+                segundos;
 
-                    alert(
-                        "Informe o tempo da atividade."
-                    );
-
-                    return;
-                }
-
-                if (distancia <= 0) {
-
-                    alert(
-                        "Informe a distância da atividade."
-                    );
-
-                    return;
-                }
-
-                const historicoCardioSalvo =
-                    localStorage.getItem(
-                        "historicoCardio"
-                    );
-
-                let historicoCardio = [];
-
-                if (historicoCardioSalvo) {
-
-                    historicoCardio =
-                        JSON.parse(
-                            historicoCardioSalvo
-                        );
-                }
-
-                const registroCardio = {
-
-                    data: new Date().toLocaleString(
-                        "pt-BR"
-                    ),
-
-                    tipo: tipoAtividade,
-
-                    local: localAtividade,
-
-                    duracaoSegundos: duracaoSegundos,
-
-                    distancia: distancia,
-
-                    velocidade: velocidade,
-
-                    inclinacao: inclinacao,
-
-                    resistencia: resistencia,
-
-                    observacoes: observacoes
-
-                };
-
-                historicoCardio.push(
-                    registroCardio
-                );
-
-                localStorage.setItem(
-                    "historicoCardio",
-                    JSON.stringify(
-                        historicoCardio
-                    )
-                );
+            if (duracaoSegundos <= 0) {
 
                 alert(
-                    "Atividade salva com sucesso!"
+                    "Informe o tempo da atividade."
                 );
 
-                mostrarResumoCardio(
-                    registroCardio
-                );
+                return;
             }
-        );
+
+            if (distancia <= 0) {
+
+                alert(
+                    "Informe a distância da atividade."
+                );
+
+                return;
+            }
+
+            const historicoCardioSalvo =
+                localStorage.getItem(
+                    "historicoCardio"
+                );
+
+            let historicoCardio = [];
+
+            if (historicoCardioSalvo) {
+
+                historicoCardio =
+                    JSON.parse(
+                        historicoCardioSalvo
+                    );
+            }
+
+            const registroCardio = {
+
+                data: new Date().toLocaleString(
+                    "pt-BR"
+                ),
+
+                tipo: tipoAtividade,
+
+                local: localAtividade,
+
+                duracaoSegundos: duracaoSegundos,
+
+                distancia: distancia,
+
+                velocidade: velocidade,
+
+                inclinacao: inclinacao,
+
+                resistencia: resistencia,
+
+                observacoes: observacoes
+
+            };
+
+            historicoCardio.push(
+                registroCardio
+            );
+
+            localStorage.setItem(
+                "historicoCardio",
+                JSON.stringify(
+                    historicoCardio
+                )
+            );
+
+            alert(
+                "Atividade salva com sucesso!"
+            );
+
+            mostrarResumoCardio(
+                registroCardio
+            );
+        }
+    );
 }
 
 function mostrarResumoCardio(registroCardio) {
