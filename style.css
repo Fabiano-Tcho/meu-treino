@@ -318,3 +318,13 @@ hr {
         width: 100%;
     }
 }
+
+button.treino-sugerido,
+button.treino-atual,
+.btn-navegacao.treino-atual {
+    background-color: #34c759 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    border: none !important;
+    box-shadow: 0 8px 20px rgba(52, 199, 89, 0.35) !important;
+}
