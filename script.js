@@ -257,7 +257,14 @@ function mostrarTreino(titulo, exercicios) {
     btnFinalizarTreino.addEventListener(
         "click",
         finalizarTreino
-    );    
+    );
+
+    conteudoTreino.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
+        }
+    );
 
     const botoesDescanso = document.querySelectorAll(".btn-descanso");
     for (let botao of botoesDescanso) {
@@ -874,6 +881,27 @@ function mostrarTelaCardio(tipoAtividade) {
 
     limparDestaqueNavegacao();
 
+    if (tipoAtividade === "Caminhada") {
+
+        btnCaminhada.classList.add(
+            "treino-atual"
+        );
+    }
+
+    if (tipoAtividade === "Corrida") {
+
+        btnCorrida.classList.add(
+            "treino-atual"
+        );
+    }
+
+    if (tipoAtividade === "Bicicleta") {
+
+        btnBicicleta.classList.add(
+            "treino-atual"
+        );
+    }
+
     let opcoesLocal = "";
 
     if (
@@ -928,6 +956,13 @@ function mostrarTelaCardio(tipoAtividade) {
                 tipoAtividade,
                 localCardio
             );
+        }
+    );
+
+    conteudoTreino.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
         }
     );
 }
