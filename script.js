@@ -2695,22 +2695,57 @@ if (treinoCSalvo) {
     );
 }
 
-const treinos = {
-    treinoA: treinoA,
-    treinoB: treinoB,
-    treinoC: treinoC
+function carregarTreinos() {
 
-};
+    const dadosSalvos =
+        localStorage.getItem("treinos");
 
-const treinosSalvos = localStorage.getItem("treinos");
+    if (dadosSalvos) {
 
-if (treinosSalvos) {
+        try {
 
-    Object.assign(
-        treinos,
-        JSON.parse(treinosSalvos)
+            const dados =
+                JSON.parse(dadosSalvos);
+
+            if (
+                dados &&
+                Object.keys(dados).length > 0
+            ) {
+
+                return dados;
+
+            }
+
+        } catch (erro) {
+
+            console.log(
+                "Erro ao carregar treinos",
+                erro
+            );
+        }
+    }
+
+
+    const treinosPadrao = {
+
+        treinoA: treinoA,
+        treinoB: treinoB,
+        treinoC: treinoC
+
+    };
+
+
+    localStorage.setItem(
+        "treinos",
+        JSON.stringify(treinosPadrao)
     );
+
+
+    return treinosPadrao;
+
 }
+
+let treinos = carregarTreinos();
 
 const listaTreinos = document.getElementById("listaTreinos");
 
