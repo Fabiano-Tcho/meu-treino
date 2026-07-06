@@ -876,10 +876,8 @@ function mostrarTelaCardio(tipoAtividade) {
     historicoTreinosDiv.classList.add(
         "oculto"
     );
-
-    limparDestaqueTreinos();
-
-    limparDestaqueNavegacao();
+    
+    limparTodosOsDestaques();
 
     if (tipoAtividade === "Caminhada") {
 
@@ -2829,6 +2827,30 @@ function limparDestaqueNavegacao() {
     }
 }
 
+function limparDestaqueCardio() {
+
+    btnCaminhada.classList.remove(
+        "treino-atual"
+    );
+
+    btnCorrida.classList.remove(
+        "treino-atual"
+    );
+
+    btnBicicleta.classList.remove(
+        "treino-atual"
+    );
+}
+
+function limparTodosOsDestaques() {
+
+    limparDestaqueTreinos();
+
+    limparDestaqueNavegacao();
+
+    limparDestaqueCardio();
+}
+
 function criarBotoesTreinos() {
     
     listaTreinos.innerHTML = "";
@@ -2891,7 +2913,7 @@ function criarBotoesTreinos() {
                     inicioTreino = new Date();
                 }
 
-                limparDestaqueTreinos();
+                limparTodosOsDestaques();
 
                 botao.classList.add(
                     "treino-atual"
@@ -3001,9 +3023,7 @@ btnHome.addEventListener(
             "oculto"
         );
 
-        limparDestaqueTreinos();
-
-        limparDestaqueNavegacao();
+        limparTodosOsDestaques();
 
         criarBotoesTreinos();
     }
