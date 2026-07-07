@@ -317,6 +317,14 @@ hr {
     .tempo-cardio input {
         width: 100%;
     }
+
+    #btnHistoricoMusculacao,
+    #btnHistoricoCardio,
+    #btnEstatisticasGeral,
+    #btnEstatisticasMusculacao,
+    #btnEstatisticasCardio {
+        width: 100%;
+    }
 }
 
 button.treino-sugerido,
@@ -346,3 +354,78 @@ button.treino-atual,
     margin: 0;
 }
 
+#btnHistoricoMusculacao,
+#btnHistoricoCardio,
+#btnEstatisticasGeral,
+#btnEstatisticasMusculacao,
+#btnEstatisticasCardio {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.sem-treino {
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.sem-treino p:first-child {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.grupo-estatistica-cardio {
+    margin: 16px 0;
+    padding: 14px;
+    border-radius: 16px;
+    background: #f7f8fa;
+    border: 1px solid #eeeeee;
+}
+
+.titulo-grupo-cardio {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subestatisticas-cardio {
+    margin-left: 18px;
+    padding-left: 12px;
+    border-left: 3px solid #34c759;
+}
+
+.subestatisticas-cardio p {
+    margin: 8px 0;
+}
+
+.grupo-estatistica-cardio {
+    margin: 16px 0;
+    padding: 14px;
+    border-radius: 16px;
+    background: #f7f8fa;
+    border: 1px solid #eeeeee;
+}
+
+.titulo-grupo-cardio {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subestatisticas-cardio {
+    margin-left: 18px;
+    padding-left: 12px;
+    border-left: 3px solid #34c759;
+}
+
+.subestatisticas-cardio p {
+    margin: 8px 0;
+}
+
+#btnAbrirGerenciarTreinos {
+    background: #f2f2f7;
+    color: #333;
+    font-weight: bold;
+}

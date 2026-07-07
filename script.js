@@ -1476,26 +1476,33 @@ function mostrarEstatisticasGeral() {
                 🏋️ Treinos de musculação: ${historicoMusculacao.length}
             </p>
 
-            <p>
-                🏃 Cardio:
-                ${historicoCardio.length}
-            </p>
+            <div class="grupo-estatistica-cardio">
 
-            <p>
-                🏃 Corridas:
-                ${totalCorridas}
-            </p>
+            <p class="titulo-grupo-cardio">
+                    ❤️ Cardio:
+                    ${historicoCardio.length}
+                </p>
 
-            <p>
-                🚶 Caminhadas:
-                ${totalCaminhadas}
-            </p>
+                <div class="subestatisticas-cardio">
 
-            <p>
-                🚴 Bicicletas:
-                ${totalBicicletas}
-            </p>
+                    <p>
+                        🚶 Caminhadas:
+                        ${totalCaminhadas}
+                    </p>
 
+                    <p>
+                        🏃 Corridas:
+                        ${totalCorridas}
+                    </p>
+
+                    <p>
+                        🚴 Bicicletas:
+                        ${totalBicicletas}
+                    </p>
+
+                </div>
+
+            </div>
             <p>
                 ⏱ Tempo total: ${horas}h ${minutos}min ${segundos}s
             </p>
@@ -2667,7 +2674,29 @@ function criarBotoesTreinos() {
         );
     
     const nomesTreinos =
-        Object.keys(treinos);
+    Object.keys(treinos);
+
+
+    if (nomesTreinos.length === 0) {
+
+        listaTreinos.innerHTML = `
+            <div class="sem-treino">
+
+                <p>
+                    🏋️ Nenhum treino cadastrado ainda
+                </p>
+
+                <p>
+                    Crie seu primeiro treino
+                    ou importe um backup.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
 
     let proximoTreino = null;
 
@@ -2758,40 +2787,52 @@ function excluirTreino() {
     }
 
 
-    let mensagem =
-        "Qual treino deseja excluir?\n\n";
+    let opcoes = "";
 
+    for (let i = 0; i < nomesTreinos.length; i++) {
 
-    for (let treino of nomesTreinos) {
-
-        mensagem +=
-            "- " + treino + "\n";
+        opcoes +=
+            `${i + 1} - ${nomesTreinos[i]}\n`;
     }
 
 
-    const nomeEscolhido =
-        prompt(mensagem);
+    const escolha =
+        prompt(
+            "Digite o número do treino que deseja excluir:\n\n" +
+            opcoes
+        );
 
 
-    if (!nomeEscolhido) {
+    if (!escolha) {
 
         return;
     }
 
 
-    if (!treinos[nomeEscolhido]) {
+    const indice =
+        Number(escolha) - 1;
+
+
+    if (
+        indice < 0 ||
+        indice >= nomesTreinos.length
+    ) {
 
         alert(
-            "Treino não encontrado."
+            "Opção inválida."
         );
 
         return;
     }
 
 
+    const nomeTreino =
+        nomesTreinos[indice];
+
+
     const confirmar =
         confirm(
-            `Tem certeza que deseja excluir ${nomeEscolhido}?`
+            `Tem certeza que deseja excluir "${nomeTreino}"?`
         );
 
 
@@ -2801,7 +2842,7 @@ function excluirTreino() {
     }
 
 
-    delete treinos[nomeEscolhido];
+    delete treinos[nomeTreino];
 
 
     localStorage.setItem(
@@ -2811,8 +2852,7 @@ function excluirTreino() {
 
 
     if (
-        chaveTreinoAtual ===
-        nomeEscolhido
+        chaveTreinoAtual === nomeTreino
     ) {
 
         conteudoTreino.innerHTML = "";
@@ -2845,6 +2885,9 @@ const btnMostrarFormularioTreino = document.getElementById("btnMostrarFormulario
 const formularioTreino = document.getElementById("formularioTreino");
 const btnCancelarTreino = document.getElementById("btnCancelarTreino");
 const btnExcluirTreino = document.getElementById("btnExcluirTreino");
+
+const btnAbrirGerenciarTreinos = document.getElementById("btnAbrirGerenciarTreinos");
+const conteudoGerenciarTreinos = document.getElementById("conteudoGerenciarTreinos");
 
 const btnHistorico =
     document.getElementById("btnHistorico");
@@ -2958,6 +3001,32 @@ btnExportarBackup.addEventListener(
 btnExcluirTreino.addEventListener(
     "click",
     excluirTreino
+);
+
+btnAbrirGerenciarTreinos.addEventListener(
+    "click",
+    function() {
+
+        conteudoGerenciarTreinos.classList.toggle(
+            "oculto"
+        );
+
+
+        if (
+            conteudoGerenciarTreinos.classList.contains(
+                "oculto"
+            )
+        ) {
+
+            btnAbrirGerenciarTreinos.textContent =
+                "⚙️ Gerenciar Treinos ⌄";
+
+        } else {
+
+            btnAbrirGerenciarTreinos.textContent =
+                "⚙️ Gerenciar Treinos ⌃";
+        }
+    }
 );
 
 btnImportarBackup.addEventListener(
