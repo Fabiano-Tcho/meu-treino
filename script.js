@@ -1330,7 +1330,7 @@ function mostrarEstatisticas() {
         "treino-atual"
     );
 
-    conteudoTreino.innerHTML = `
+    historicoTreinosDiv.innerHTML = `
         <div class="resumo-final">
             <h2>📊 Estatísticas</h2>
 
@@ -1354,6 +1354,17 @@ function mostrarEstatisticas() {
     btnEstatisticasGeral.addEventListener(
         "click",
         mostrarEstatisticasGeral
+    );
+
+    historicoTreinosDiv.classList.remove(
+        "oculto"
+    );
+
+    historicoTreinosDiv.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
+        }
     );
 
     const btnEstatisticasMusculacao =
@@ -1457,7 +1468,7 @@ function mostrarEstatisticasGeral() {
     const segundos =
         tempoTotalSegundos % 60;
 
-    conteudoTreino.innerHTML = `
+    historicoTreinosDiv.innerHTML = `
         <div class="resumo-final">
             <h2>📈 Estatísticas Gerais</h2>
 
@@ -1583,7 +1594,7 @@ function mostrarEstatisticasMusculacao() {
             ).toFixed(1)
             : 0;
 
-    conteudoTreino.innerHTML = `
+    historicoTreinosDiv.innerHTML = `
         <div class="resumo-final">
 
             <h2>
@@ -1772,7 +1783,7 @@ function mostrarEstatisticasCardio() {
         return `${minutos}min ${segundos}s/km`;
     }
 
-    conteudoTreino.innerHTML = `
+    historicoTreinosDiv.innerHTML = `
         <div class="resumo-final">
 
             <h2>🏃 Estatísticas do Cardio</h2>
@@ -1873,7 +1884,7 @@ function mostrarMenuHistorico() {
         historicoMusculacao.length +
         historicoCardio.length;
 
-    conteudoTreino.innerHTML = `
+    historicoTreinosDiv.innerHTML = `
         <div class="resumo-final">
             <h2>📜 Histórico</h2>
 
@@ -1886,6 +1897,17 @@ function mostrarMenuHistorico() {
             </button>
         </div>
     `;
+
+    historicoTreinosDiv.classList.remove(
+        "oculto"
+    );
+
+    historicoTreinosDiv.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
+        }
+    );
 
     const btnHistoricoMusculacao =
         document.getElementById("btnHistoricoMusculacao");
@@ -2247,6 +2269,14 @@ function mostrarHistorico(filtro = "") {
             }
         );
     }
+
+    historicoTreinosDiv.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
+        }
+    );
+
 }
 
 function mostrarHistoricoCardio() {
@@ -2357,8 +2387,18 @@ function mostrarHistoricoCardio() {
         `;
     }
 
-    conteudoTreino.innerHTML = html;
+    historicoTreinosDiv.innerHTML = html;
 
+    historicoTreinosDiv.classList.remove(
+        "oculto"
+    );
+
+    historicoTreinosDiv.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start"
+        }
+    );
 
     const botoesExcluirHistoricoCardio =
         document.querySelectorAll(
@@ -2526,270 +2566,36 @@ function importarBackup(evento) {
     );
 }
 
-const treinoA = [
-    {
-        nome: "Supino Reto  (Máquina ou Halteres)",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    
-    {   
-        nome: "Supino Inclinado com Halteres",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-
-    {
-        nome: "Desenvolvimento de Ombros (Máquina ou Halteres)",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-
-    {
-        nome: "Elevação Lateral com Halteres",
-        series: 3,
-        repeticoes: "12-15",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-
-    {
-        nome: "Tríceps na Polia (Barra Reta ou Corda)",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    }
-];
-
-const treinoASalvo = localStorage.getItem("treinoA");
-
-if (treinoASalvo) {
-    Object.assign(
-        treinoA,
-        JSON.parse(treinoASalvo)
-    );
-}
-
-const treinoB = [
-    {
-        nome: "Puxada Alta na Polia (Pegada Pronada)",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Remada Baixa na Polia (Pegada Neutra)",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Remada Alta na Polia ou Halteres",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Rosca Direta na Polia ou Halteres",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Rosca Martelo com Halteres",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    }
-];
-
-const treinoBSalvo = localStorage.getItem("treinoB");
-
-if (treinoBSalvo) {
-    Object.assign(
-        treinoB,
-        JSON.parse(treinoBSalvo)
-    );
-}
-
-const treinoC = [
-    {
-        nome: "Leg Press 45º",
-        series: 3,
-        repeticoes: "10-12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Cadeira Extensora",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Cadeira Flexora ou Mesa Flexora",
-        series: 3,
-        repeticoes: "12",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Panturrilha em Pé",
-        series: 4,
-        repeticoes: "15",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Abdominal Infra (Elevação no Solo)",
-        series: 3,
-        repeticoes: "15",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    },
-    {
-        nome: "Prancha Isométrica",
-        series: 3,
-        repeticoes: "30-45 segundos",
-        seriesRealizadas: 0,
-        cargaAtual: "",
-        descanso: 60,
-        gif: "",
-        video: "",
-        cronometro: null
-    }
-];
-
-const treinoCSalvo = localStorage.getItem("treinoC");
-
-if (treinoCSalvo) {
-    Object.assign(
-        treinoC,
-        JSON.parse(treinoCSalvo)
-    );
-}
-
 function carregarTreinos() {
 
     const dadosSalvos =
         localStorage.getItem("treinos");
 
-    if (dadosSalvos) {
-
-        try {
-
-            const dados =
-                JSON.parse(dadosSalvos);
-
-            if (
-                dados &&
-                Object.keys(dados).length > 0
-            ) {
-
-                return dados;
-
-            }
-
-        } catch (erro) {
-
-            console.log(
-                "Erro ao carregar treinos",
-                erro
-            );
-        }
+    if (!dadosSalvos) {
+        return {};
     }
 
+    try {
 
-    const treinosPadrao = {
+        const dados =
+            JSON.parse(dadosSalvos);
 
-        treinoA: treinoA,
-        treinoB: treinoB,
-        treinoC: treinoC
+        if (
+            dados &&
+            typeof dados === "object"
+        ) {
 
-    };
+            return dados;
+        }
 
+    } catch (erro) {
 
-    localStorage.setItem(
-        "treinos",
-        JSON.stringify(treinosPadrao)
-    );
+        alert(
+            "Erro ao carregar os treinos salvos."
+        );
+    }
 
-
-    return treinosPadrao;
-
+    return {};
 }
 
 let treinos = carregarTreinos();
@@ -2936,13 +2742,98 @@ function criarBotoesTreinos() {
     }
 }
 
+function excluirTreino() {
+
+    const nomesTreinos =
+        Object.keys(treinos);
+
+
+    if (nomesTreinos.length === 0) {
+
+        alert(
+            "Não existe nenhum treino para excluir."
+        );
+
+        return;
+    }
+
+
+    let mensagem =
+        "Qual treino deseja excluir?\n\n";
+
+
+    for (let treino of nomesTreinos) {
+
+        mensagem +=
+            "- " + treino + "\n";
+    }
+
+
+    const nomeEscolhido =
+        prompt(mensagem);
+
+
+    if (!nomeEscolhido) {
+
+        return;
+    }
+
+
+    if (!treinos[nomeEscolhido]) {
+
+        alert(
+            "Treino não encontrado."
+        );
+
+        return;
+    }
+
+
+    const confirmar =
+        confirm(
+            `Tem certeza que deseja excluir ${nomeEscolhido}?`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+    }
+
+
+    delete treinos[nomeEscolhido];
+
+
+    localStorage.setItem(
+        "treinos",
+        JSON.stringify(treinos)
+    );
+
+
+    if (
+        chaveTreinoAtual ===
+        nomeEscolhido
+    ) {
+
+        conteudoTreino.innerHTML = "";
+
+        treinoAtual = [];
+
+        tituloAtual = "";
+
+        chaveTreinoAtual = "";
+    }
+
+
+    criarBotoesTreinos();
+
+
+    alert(
+        "Treino excluído com sucesso!"
+    );
+}
+
 criarBotoesTreinos();
-
-
-
-//const botaoTreinoA = document.getElementById("btnTreinoA");
-//const botaoTreinoB = document.getElementById("btnTreinoB");
-//const botaoTreinoC = document.getElementById("btnTreinoC");
 
 const conteudoTreino = document.getElementById("conteudoTreino");
 
@@ -2953,6 +2844,7 @@ const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
 const btnMostrarFormularioTreino = document.getElementById("btnMostrarFormularioTreino");
 const formularioTreino = document.getElementById("formularioTreino");
 const btnCancelarTreino = document.getElementById("btnCancelarTreino");
+const btnExcluirTreino = document.getElementById("btnExcluirTreino");
 
 const btnHistorico =
     document.getElementById("btnHistorico");
@@ -3061,6 +2953,11 @@ btnBicicleta.addEventListener(
 btnExportarBackup.addEventListener(
     "click",
     exportarBackup
+);
+
+btnExcluirTreino.addEventListener(
+    "click",
+    excluirTreino
 );
 
 btnImportarBackup.addEventListener(
