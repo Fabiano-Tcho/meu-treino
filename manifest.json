@@ -1,0 +1,24 @@
+{
+    "name": "Treino+",
+    "short_name": "Treino+",
+
+    "description": "Controle de treinos, evolução e cardio",
+
+    "start_url": "./index.html",
+
+    "display": "standalone",
+
+    "background_color": "#f4f5f7",
+
+    "theme_color": "#34c759",
+
+    "orientation": "portrait",
+
+    "icons": [
+        {
+            "src": "logo-treino-plus.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -648,6 +648,27 @@ function mostrarTreino(titulo, exercicios) {
 
 function finalizarTreino() {
 
+    let algumaSerieFeita = false;
+
+
+    for (let exercicio of treinoAtual) {
+
+        if (exercicio.seriesRealizadas > 0) {
+
+            algumaSerieFeita = true;
+        }
+    }
+
+
+    if (!algumaSerieFeita) {
+
+        alert(
+            "Nenhuma série foi realizada ainda."
+        );
+
+        return;
+    }
+
     const confirmar = confirm(
         "Deseja finalizar o treino?"
     );
@@ -865,6 +886,8 @@ function finalizarTreino() {
         function() {
 
             conteudoTreino.innerHTML = "";
+
+            limparTodosOsDestaques();
 
             criarBotoesTreinos();
         }
@@ -1309,7 +1332,9 @@ function mostrarResumoCardio(registroCardio) {
 
             conteudoTreino.innerHTML = "";
 
-            limparDestaqueNavegacao();
+            conteudoTreino.innerHTML = "";
+
+            limparTodosOsDestaques();
 
             criarBotoesTreinos();
         }
@@ -2454,6 +2479,10 @@ function exportarBackup() {
 
     const backup = {
 
+        versaoApp: "1.0",
+ 
+        dataBackup: new Date().toLocaleString("pt-BR"),
+
         treinos:
             JSON.parse(
                 localStorage.getItem("treinos")
@@ -2517,56 +2546,99 @@ function importarBackup(evento) {
 
     const arquivo =
         evento.target.files[0];
-    
-    if(!arquivo) {
+
+
+    if (!arquivo) {
+
         return;
     }
+
 
     const leitor =
         new FileReader();
 
+
     leitor.onload =
-        function(e) {
+        function(eventoLeitura) {
 
-            const dadosBackup =
+
+            const dados =
                 JSON.parse(
-                    e.target.result
+                    eventoLeitura.target.result
                 );
-            
-            localStorage.setItem(
-                "treinos",
-                JSON.stringify(
-                    dadosBackup.treinos
-                )
-            );
 
-            localStorage.setItem(
-                "historicoTreinos",
-                JSON.stringify(
-                    dadosBackup.historicoTreinos
-                )
-            );
 
-            localStorage.setItem(
-                "historicoCardio",
-                JSON.stringify(
-                    dadosBackup.historicoCardio || []
-                )
-            );
+            const confirmarImportacao =
+                confirm(
+`📦 Backup Treino+
 
-            localStorage.setItem(
-                "evolucaoExercicios",
-                JSON.stringify(
-                    dadosBackup.evolucaoExercicios
-                )
-            );
+Versão: ${dados.versaoApp || "Não identificada"}
+
+Criado em: ${dados.dataBackup || "Data desconhecida"}
+
+Deseja importar este backup?`
+                );
+
+
+            if (!confirmarImportacao) {
+
+                return;
+            }
+
+
+            if (dados.treinos) {
+
+                localStorage.setItem(
+                    "treinos",
+                    JSON.stringify(
+                        dados.treinos
+                    )
+                );
+            }
+
+
+            if (dados.historicoTreinos) {
+
+                localStorage.setItem(
+                    "historicoTreinos",
+                    JSON.stringify(
+                        dados.historicoTreinos
+                    )
+                );
+            }
+
+
+            if (dados.evolucaoExercicios) {
+
+                localStorage.setItem(
+                    "evolucaoExercicios",
+                    JSON.stringify(
+                        dados.evolucaoExercicios
+                    )
+                );
+            }
+
+
+            if (dados.historicoCardio) {
+
+                localStorage.setItem(
+                    "historicoCardio",
+                    JSON.stringify(
+                        dados.historicoCardio
+                    )
+                );
+            }
+
 
             alert(
-                "Backup restaurado com sucesso!"
+                "Backup importado com sucesso! O aplicativo será atualizado."
             );
 
+
             location.reload();
+
         };
+
 
     leitor.readAsText(
         arquivo
@@ -2606,6 +2678,12 @@ function carregarTreinos() {
 }
 
 let treinos = carregarTreinos();
+
+let tituloAtual = "";
+
+let treinoAtual = [];
+
+let chaveTreinoAtual = "";
 
 const listaTreinos = document.getElementById("listaTreinos");
 
@@ -2872,9 +2950,6 @@ function excluirTreino() {
         "Treino excluído com sucesso!"
     );
 }
-
-criarBotoesTreinos();
-
 const conteudoTreino = document.getElementById("conteudoTreino");
 
 const btnMostrarFormulario = document.getElementById("btnMostrarFormulario");
@@ -2943,6 +3018,21 @@ btnHistorico.addEventListener(
 btnHome.addEventListener(
     "click",
     function() {
+ 
+        if (
+            treinoAtual.length > 0
+        ) {
+
+            const confirmarSaida =
+                confirm(
+                    "Existe um treino aberto. Deseja voltar mesmo assim?"
+                );
+
+            if (!confirmarSaida) {
+
+                return;
+            }
+        }
 
         conteudoTreino.innerHTML = "";
 
@@ -2957,6 +3047,13 @@ btnHome.addEventListener(
         formularioExercicio.classList.add(
             "oculto"
         );
+
+        conteudoGerenciarTreinos.classList.add(
+            "oculto"
+        );
+
+        btnAbrirGerenciarTreinos.textContent =
+            "⚙️ Gerenciar Treinos ⌄";
 
         limparTodosOsDestaques();
 
@@ -3046,9 +3143,23 @@ btnMostrarFormulario.addEventListener(
     "click",
     function() {
 
+
+        if (
+            !chaveTreinoAtual
+        ) {
+
+            alert(
+                "Escolha um treino antes de adicionar exercícios."
+            );
+
+            return;
+        }
+
+
         formularioExercicio.classList.remove(
             "oculto"
         );
+
 
         formularioExercicio.scrollIntoView(
             {
@@ -3084,9 +3195,23 @@ btnSalvarTreino.addEventListener(
             "nomeTreino"
         ).value.trim();
 
+
         if (!nomeTreino) {
+
             alert(
                 "Informe o nome do treino."
+            );
+
+            return;
+        }
+
+
+        if (
+            nomeTreino.length > 20
+        ) {
+
+            alert(
+                "O nome do treino deve ter no máximo 20 caracteres."
             );
 
             return;
@@ -3112,19 +3237,45 @@ btnSalvarTreino.addEventListener(
 
         treinos[nomeTreino] = [];
 
+
         localStorage.setItem(
             "treinos",
             JSON.stringify(treinos)
         );
 
+
         criarBotoesTreinos();
+
+
+        tituloAtual = nomeTreino;
+
+        treinoAtual = treinos[nomeTreino];
+
+        chaveTreinoAtual = nomeTreino;
+
+
+        mostrarTreino(
+            nomeTreino,
+            treinoAtual
+        );
+
 
         formularioTreino.classList.add(
             "oculto"
         );
+
+
         document.getElementById(
             "nomeTreino"
         ).value = "";
+
+
+        conteudoTreino.scrollIntoView(
+            {
+                behavior: "smooth",
+                block: "start"
+            }
+        );
     }
 );
 
@@ -3277,11 +3428,20 @@ btnSalvarExercicio.addEventListener("click", function() {
 
 });
 
-let tituloAtual = "";
+window.addEventListener(
+    "beforeunload",
+    function(evento) {
 
-let treinoAtual = [];
+        if (
+            treinoAtual.length > 0
+        ) {
 
-let chaveTreinoAtual = "";
+            evento.preventDefault();
+
+            evento.returnValue = "";
+        }
+    }
+);
 
 let temporizadorBuscaHistorico = null;
 
@@ -3292,3 +3452,16 @@ let cronometroTreino = null;
 let indiceEdicao = null;
 
 let quantidadeHistoricoVisivel = 10;
+
+criarBotoesTreinos();
+
+
+if (
+    "serviceWorker" in navigator
+) {
+
+    navigator.serviceWorker.register(
+        "service-worker.js"
+    );
+
+}
