@@ -255,6 +255,14 @@ hr {
     gap: 10px;
 }
 
+#listaTreinos button {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .area-finalizar-treino {
     display: flex;
     justify-content: center;
@@ -300,7 +308,6 @@ hr {
     #btnMostrarFormularioTreino,
     #btnMostrarFormulario,
     #btnExcluirTreino,
-    #btnAbrirGerenciarTreinos,
     #btnCaminhada,
     #btnCorrida,
     #btnBicicleta {
@@ -409,7 +416,11 @@ button.treino-atual,
 }
 
 #btnAbrirGerenciarTreinos {
+    width: auto;
+    min-width: 190px;
+    max-width: 100%;
     background: #f2f2f7;
     color: #333;
     font-weight: bold;
+    white-space: nowrap;
 }

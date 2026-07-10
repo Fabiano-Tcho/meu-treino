@@ -39,6 +39,39 @@ self.addEventListener(
     }
 );
 
+self.addEventListener(
+    "activate",
+    function(evento) {
+
+        evento.waitUntil(
+
+            caches.keys()
+                .then(
+                    function(listaCaches) {
+
+                        return Promise.all(
+
+                            listaCaches.map(
+                                function(cache) {
+
+                                    if (
+                                        cache !== CACHE_NAME
+                                    ) {
+
+                                        return caches.delete(
+                                            cache
+                                        );
+
+                                    }
+
+                                }
+                            )
+                        );
+                    }
+                )
+        );
+    }
+);
 
 self.addEventListener(
     "fetch",

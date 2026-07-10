@@ -198,16 +198,36 @@ function mostrarTreino(titulo, exercicios) {
     if (exercicios.length === 0) {
 
         conteudoTreino.innerHTML = `
-            <h2>${titulo}</h2>
 
-            <p>
-                Nenhum exercício cadastrado.
-            </p>
+            <div class="cartao-exercicio sem-treino">
 
-            <p>
-                Clique em "+ Adicionar Exercício" para criar o primeiro exercício.
-            </p>
+                <h2>
+                    🏋️ ${titulo}
+                </h2>
+
+                <p>
+                    Nenhum exercício cadastrado ainda.
+                </p>
+
+                <p>
+                    Clique em
+                    <b>+ Adicionar Exercício</b>
+                    para montar este treino.
+                </p>
+
+            </div>
+
         `;
+
+
+        conteudoTreino.scrollIntoView(
+            {
+                behavior: "smooth",
+                block: "start"
+            }
+        );
+
+
         return;
     }
 
@@ -1332,8 +1352,6 @@ function mostrarResumoCardio(registroCardio) {
 
             conteudoTreino.innerHTML = "";
 
-            conteudoTreino.innerHTML = "";
-
             limparTodosOsDestaques();
 
             criarBotoesTreinos();
@@ -1551,6 +1569,35 @@ function mostrarEstatisticasMusculacao() {
                 "historicoTreinos"
             )
         ) || [];
+
+        if (
+            historico.length === 0
+        ) {
+
+            historicoTreinosDiv.innerHTML = `
+
+                <div class="sem-treino">
+
+                    <p>
+                        📅 Nenhum treino registrado ainda.
+                    </p>
+
+                    <p>
+                        Finalize seu primeiro treino para criar o histórico.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            historicoTreinosDiv.classList.remove(
+                "oculto"
+            );
+
+
+            return;
+        }
 
     let tempoSegundos = 0;
 
@@ -2477,7 +2524,9 @@ function mostrarHistoricoCardio() {
 
 function exportarBackup() {
 
-    const backup = {
+    try {
+
+        const backup = {
 
         versaoApp: "1.0",
  
@@ -2534,12 +2583,45 @@ function exportarBackup() {
 
     link.href = url;
 
+    const dataBackup =
+        new Date()
+            .toLocaleDateString(
+                "pt-BR"
+            )
+            .replaceAll(
+                "/",
+                "-"
+            );
+
+
     link.download =
-        "backup-treinos.json";
+        `TreinoPlus-${dataBackup}.json`;
     
-    link.click();
+        link.click();
 
     URL.revokeObjectURL(url);
+
+
+    alert(
+        "Backup exportado com sucesso!"
+    );
+
+
+    } catch (erro) {
+
+
+        console.log(
+            "Erro ao exportar backup:",
+            erro
+        );
+
+
+        alert(
+            "Não foi possível exportar o backup."
+        );
+
+    }
+
 }
 
 function importarBackup(evento) {
@@ -2567,6 +2649,16 @@ function importarBackup(evento) {
                     eventoLeitura.target.result
                 );
 
+            if (
+                !dados.treinos
+            ) {
+
+                alert(
+                    "Este arquivo não parece ser um backup válido do Treino+."
+                );
+
+                return;
+            }
 
             const confirmarImportacao =
                 confirm(
@@ -2633,6 +2725,9 @@ Deseja importar este backup?`
             alert(
                 "Backup importado com sucesso! O aplicativo será atualizado."
             );
+
+
+            inputImportarBackup.value = "";
 
 
             location.reload();
@@ -2928,7 +3023,6 @@ function excluirTreino() {
         JSON.stringify(treinos)
     );
 
-
     if (
         chaveTreinoAtual === nomeTreino
     ) {
@@ -2940,11 +3034,35 @@ function excluirTreino() {
         tituloAtual = "";
 
         chaveTreinoAtual = "";
+
+
+        historicoTreinosDiv.classList.add(
+            "oculto"
+        );
+
+
+        formularioTreino.classList.add(
+            "oculto"
+        );
+
+
+        formularioExercicio.classList.add(
+            "oculto"
+        );
+
+
+        limparTodosOsDestaques();
+
+
+        window.scrollTo(
+            {
+                top: 0,
+                behavior: "smooth"
+            }
+        );
     }
 
-
     criarBotoesTreinos();
-
 
     alert(
         "Treino excluído com sucesso!"
@@ -3019,19 +3137,32 @@ btnHome.addEventListener(
     "click",
     function() {
  
+        const treinoIniciado =
+            treinoAtual.some(
+                function(exercicio) {
+
+                    return (
+                        exercicio.seriesRealizadas > 0
+                    );
+                }
+            );
+
+
         if (
-            treinoAtual.length > 0
+            treinoIniciado
         ) {
 
             const confirmarSaida =
                 confirm(
-                    "Existe um treino aberto. Deseja voltar mesmo assim?"
+                    "Existe um treino em andamento. Deseja sair mesmo assim?"
                 );
+
 
             if (!confirmarSaida) {
 
                 return;
             }
+
         }
 
         conteudoTreino.innerHTML = "";
@@ -3207,11 +3338,11 @@ btnSalvarTreino.addEventListener(
 
 
         if (
-            nomeTreino.length > 20
+            nomeTreino.length > 15
         ) {
 
             alert(
-                "O nome do treino deve ter no máximo 20 caracteres."
+                "O nome do treino deve ter no máximo 15 caracteres."
             );
 
             return;
@@ -3432,14 +3563,42 @@ window.addEventListener(
     "beforeunload",
     function(evento) {
 
+
+        const treinoIniciado =
+            treinoAtual.some(
+                function(exercicio) {
+
+                    return (
+                        exercicio.seriesRealizadas > 0
+                    );
+                }
+            );
+
+
         if (
-            treinoAtual.length > 0
+            treinoIniciado
         ) {
 
             evento.preventDefault();
 
             evento.returnValue = "";
+
         }
+
+    }
+);
+
+window.addEventListener(
+    "load",
+    function() {
+
+        window.scrollTo(
+            {
+                top: 0,
+                behavior: "instant"
+            }
+        );
+
     }
 );
 
@@ -3462,6 +3621,25 @@ if (
 
     navigator.serviceWorker.register(
         "service-worker.js"
+    )
+    .then(
+        function() {
+
+            console.log(
+                "✅ Treino+ instalado como PWA"
+            );
+
+        }
+    )
+    .catch(
+        function(erro) {
+
+            console.log(
+                "❌ Erro no PWA:",
+                erro
+            );
+
+        }
     );
 
 }
