@@ -601,57 +601,73 @@ function mostrarTreino(titulo, exercicios) {
 
     function iniciarCronometroTreino() {
 
+
         if (cronometroTreino) {
 
-                clearInterval(
-                    cronometroTreino
-                );
-            }
+            clearInterval(
+                cronometroTreino
+            );
+        }
 
-            cronometroTreino =
-                setInterval(
-                    function() {
 
-                        const agora =
-                            new Date();
+        if (!inicioTreino) {
 
-                        const diferenca =
-                            Math.floor(
-                                (
-                                    agora -
-                                    inicioTreino
-                                ) / 1000
-                            );
-                        
-                        const minutos =
-                            Math.floor(
-                                diferenca / 60
-                            );
+            inicioTreino =
+                new Date();
+        }
 
-                        const segundos =
-                            diferenca % 60;
 
-                        const textoTempo =
-                            document.getElementById(
-                                "tempoTreino"
-                            );
-                        
-                        if (textoTempo) {
+        cronometroTreino =
+            setInterval(
+                function() {
 
-                            textoTempo.textContent =
-                                `⏱ Tempo de treino: ${
-                                    String(minutos)
-                                        .padStart(2, "0")
-                                }:${
-                                    String(segundos)
-                                        .padStart(2, "0")
-                                }`;
-                        }
-                    },
-                    1000
-                );
+
+                    const agora =
+                        new Date();
+
+
+                    const diferenca =
+                        tempoTreinoPausado +
+                        Math.floor(
+                            (
+                                agora -
+                                inicioTreino
+                            ) / 1000
+                        );
+
+
+                    const minutos =
+                        Math.floor(
+                            diferenca / 60
+                        );
+
+
+                    const segundos =
+                        diferenca % 60;
+
+
+                    const textoTempo =
+                        document.getElementById(
+                            "tempoTreino"
+                        );
+
+
+                    if (textoTempo) {
+
+                        textoTempo.textContent =
+                            `⏱ Tempo de treino: ${
+                                String(minutos)
+                                    .padStart(2, "0")
+                            }:${
+                                String(segundos)
+                                    .padStart(2, "0")
+                            }`;
+                    }
+
+                },
+                1000
+            );
     }
-
     function pararCronometroTreino() {
 
         if(cronometroTreino) {
@@ -963,7 +979,7 @@ function mostrarTelaCardio(tipoAtividade) {
         `;
     }
 
-    conteudoTreino.innerHTML = `
+    conteudoCardio.innerHTML = `
         <div class="resumo-final">
             <h2>${tipoAtividade}</h2>
 
@@ -1000,7 +1016,7 @@ function mostrarTelaCardio(tipoAtividade) {
         }
     );
 
-    conteudoTreino.scrollIntoView(
+    conteudoCardio.scrollIntoView(
         {
             behavior: "smooth",
             block: "start"
@@ -1070,7 +1086,7 @@ function mostrarFormularioCardio(
         `;
     }
 
-    conteudoTreino.innerHTML = `
+    conteudoCardio.innerHTML = `
         <div class="resumo-final">
             <h2>${tipoAtividade}</h2>
 
@@ -1309,7 +1325,7 @@ function mostrarResumoCardio(registroCardio) {
             `;
         }
 
-    conteudoTreino.innerHTML = `
+    conteudoCardio.innerHTML = `
         <div class="resumo-final">
             <h2>✅ ${registroCardio.tipo} concluída</h2>
 
@@ -1350,7 +1366,7 @@ function mostrarResumoCardio(registroCardio) {
         "click",
         function() {
 
-            conteudoTreino.innerHTML = "";
+            conteudoCardio.innerHTML = "";
 
             limparTodosOsDestaques();
 
@@ -3070,6 +3086,8 @@ function excluirTreino() {
 }
 const conteudoTreino = document.getElementById("conteudoTreino");
 
+const conteudoCardio = document.getElementById("conteudoCardio");
+
 const btnMostrarFormulario = document.getElementById("btnMostrarFormulario");
 const formularioExercicio = document.getElementById("formularioExercicio");
 const btnCancelarExercicio = document.getElementById("btnCancelarExercicio");
@@ -3166,6 +3184,8 @@ btnHome.addEventListener(
         }
 
         conteudoTreino.innerHTML = "";
+
+        conteudoCardio.innerHTML = "";
 
         historicoTreinosDiv.classList.add(
             "oculto"

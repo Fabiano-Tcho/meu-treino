@@ -24,7 +24,7 @@ body {
 }
 
 #logoApp {
-    width: 190px;
+    width: 220px;
     max-width: 60vw;
     display: block;
     border-radius: 20px;
@@ -285,8 +285,8 @@ hr {
     }
 
     #logoApp {
-        width: 175px;
-        max-width: 72vw;
+        width: 205px;
+        max-width: 78vw;
     }
 
     .secao-app,
@@ -423,4 +423,19 @@ button.treino-atual,
     color: #333;
     font-weight: bold;
     white-space: nowrap;
+}
+
+.titulo-carga {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.tempo-descanso {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.input-carga {
+    font-size: 1.1rem;
+    font-weight: 600;
 }
