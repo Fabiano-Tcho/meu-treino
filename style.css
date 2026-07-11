@@ -120,6 +120,7 @@ button:active {
     background: #ffffff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     transition: all 0.25s ease;
+    padding: 18px;
 }
 
 .cartao-exercicio:hover {
@@ -130,7 +131,8 @@ button:active {
 .cartao-exercicio h3 {
     color: #111;
     margin-top: 0;
-    padding-bottom: 12px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
     border-bottom: 1px solid #eeeeee;
 }
 
@@ -150,7 +152,7 @@ button:active {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 16px 0;
+    margin: 10px 0;
 }
 
 .info-exercicio span {
@@ -201,7 +203,7 @@ select:focus {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 12px 0 18px;
+    margin: 8px 0 12px;
 }
 
 .btn-aumentarCarga,
@@ -446,13 +448,15 @@ button.treino-atual,
 }
 
 #btnAbrirGerenciarTreinos {
-    width: auto;
-    min-width: 190px;
-    max-width: 100%;
-    background: #f2f2f7;
-    color: #333;
-    font-weight: bold;
-    white-space: nowrap;
+    display: block;
+    margin: 16px auto;
+    padding: 10px 22px;
+    background: #fafafa;
+    border: 3px solid #dcdcdc;
+    border-radius: 12px;
+    color: #444;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .titulo-carga {
