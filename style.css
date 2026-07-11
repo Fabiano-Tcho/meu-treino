@@ -71,7 +71,7 @@ button {
     font-size: 16px;
     background: #eeeeef;
     color: #111;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
 }
 
 button:active {
@@ -92,6 +92,18 @@ button:active {
     color: white;
 }
 
+.cartao-exercicio button:disabled {
+
+    background: #bfc5c9;
+
+    color: #666;
+
+    cursor: default;
+
+    opacity: 0.8;
+
+}
+
 .btn-editar {
     background: #007aff;
     color: white;
@@ -103,7 +115,16 @@ button:active {
 }
 
 .cartao-exercicio {
-    border: 1px solid #eeeeee;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+}
+
+.cartao-exercicio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
 }
 
 .cartao-exercicio h3 {
@@ -116,6 +137,13 @@ button:active {
 .cartao-concluido {
     border-left: 6px solid #34c759;
     background: #f0fff4;
+    opacity: 0.75;
+    transform: scale(0.99);
+    transition: all 0.3s ease;
+}
+
+.cartao-concluido h3 {
+    color: #2f8f4e;
 }
 
 .info-exercicio {
@@ -126,7 +154,7 @@ button:active {
 }
 
 .info-exercicio span {
-    background: #f3f4f6;
+    background: #eef8ef;
     padding: 8px 13px;
     border-radius: 999px;
     font-size: 14px;
@@ -149,7 +177,7 @@ button:active {
 .barra-descanso .barra-progresso {
     height: 100%;
     background: #34c759;
-    transition: width 0.3s ease;
+    transition: width 0.45s ease;
 }
 
 input,
@@ -276,6 +304,8 @@ hr {
     padding: 15px 35px;
     border-radius: 18px;
     box-shadow: 0 8px 20px rgba(52,199,89,0.35);
+    font-size: 1.05rem;
+    letter-spacing: 0.4px;
 }
 
 @media (max-width: 650px) {
@@ -426,8 +456,10 @@ button.treino-atual,
 }
 
 .titulo-carga {
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #2c2c2c;
+    margin-bottom: 8px;
 }
 
 .tempo-descanso {
@@ -438,4 +470,12 @@ button.treino-atual,
 .input-carga {
     font-size: 1.1rem;
     font-weight: 600;
+}
+
+.historico-carga {
+    color: #666;
+    font-size: 0.92rem;
+    font-style: italic;
+    margin-top: 6px;
+    margin-bottom: 12px;
 }

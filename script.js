@@ -411,6 +411,8 @@ function mostrarTreino(titulo, exercicios) {
             
             indiceEdicao = indice;
 
+            btnMostrarFormulario.disabled = true;
+
             document.getElementById("nomeExercicio").value = exercicio.nome;
 
             document.getElementById("seriesExercicio").value = exercicio.series;
@@ -425,7 +427,36 @@ function mostrarTreino(titulo, exercicios) {
 
             document.getElementById("videoExercicio").value = exercicio.video;
 
-            formularioExercicio.classList.remove("oculto");
+
+            conteudoGerenciarTreinos.classList.remove(
+                "oculto"
+            );
+
+
+            btnAbrirGerenciarTreinos.textContent =
+                "⚙️ Gerenciar Treinos ⌃";
+
+
+            formularioExercicio.classList.remove(
+                "oculto"
+            );
+
+            document.querySelector(
+                "#formularioExercicio h3"
+            ).textContent =
+                "✏️ Editar Exercício";
+
+            document.getElementById(
+                "btnSalvarExercicio"
+            ).textContent =
+                "Salvar Alterações";
+
+            formularioExercicio.scrollIntoView(
+                {
+                    behavior: "smooth",
+                    block: "start"
+                }
+            );
         });
     }
 
@@ -888,9 +919,15 @@ function finalizarTreino() {
 
     pararCronometroTreino();
 
+    inicioTreino = null;
+
+    limparFormularioExercicio();
+
     tituloAtual = "";
     treinoAtual = [];
     chaveTreinoAtual = "";
+
+    criarBotoesTreinos();
 
     conteudoTreino.innerHTML = `
         <div class="resumo-final">
@@ -921,7 +958,11 @@ function finalizarTreino() {
         "click",
         function() {
 
+            limparFormularioExercicio();
+
             conteudoTreino.innerHTML = "";
+
+            conteudoCardio.innerHTML = "";
 
             limparTodosOsDestaques();
 
@@ -2933,6 +2974,8 @@ function criarBotoesTreinos() {
                     "oculto"
                 );
 
+                limparFormularioExercicio();
+
                 if (!inicioTreino) {
                     inicioTreino = new Date();
                 }
@@ -3183,6 +3226,8 @@ btnHome.addEventListener(
 
         }
 
+        limparFormularioExercicio();
+
         conteudoTreino.innerHTML = "";
 
         conteudoCardio.innerHTML = "";
@@ -3294,7 +3339,6 @@ btnMostrarFormulario.addEventListener(
     "click",
     function() {
 
-
         if (
             !chaveTreinoAtual
         ) {
@@ -3306,11 +3350,11 @@ btnMostrarFormulario.addEventListener(
             return;
         }
 
+        limparFormularioExercicio();
 
         formularioExercicio.classList.remove(
             "oculto"
         );
-
 
         formularioExercicio.scrollIntoView(
             {
@@ -3322,20 +3366,14 @@ btnMostrarFormulario.addEventListener(
     }
 );
 
-btnCancelarExercicio.addEventListener("click", function() {
+btnCancelarExercicio.addEventListener(
+    "click",
+    function() {
 
-    indiceEdicao = null;
+        limparFormularioExercicio();
 
-    document.getElementById("nomeExercicio").value = "";
-    document.getElementById("seriesExercicio").value = "";
-    document.getElementById("repeticoesExercicio").value = "";
-    document.getElementById("cargaExercicio").value = "";
-    document.getElementById("descansoExercicio").value = "";
-    document.getElementById("gifExercicio").value = "";
-    document.getElementById("videoExercicio").value = "";
-
-    formularioExercicio.classList.add("oculto");
-});
+    }
+);
 
 const btnSalvarTreino = document.getElementById("btnSalvarTreino");
 
@@ -3560,22 +3598,7 @@ btnSalvarExercicio.addEventListener("click", function() {
         treinoAtual
     );
 
-    document.getElementById("nomeExercicio").value = "";
-
-    document.getElementById("seriesExercicio").value = "";
-
-    document.getElementById("repeticoesExercicio").value = "";
-
-    document.getElementById("cargaExercicio").value = "";
-
-    document.getElementById("descansoExercicio").value = "";
-
-    document.getElementById("gifExercicio").value = "";
-
-    document.getElementById("videoExercicio").value = "";
-
-    formularioExercicio.classList.add("oculto");
-
+    limparFormularioExercicio();
 
 });
 
@@ -3631,6 +3654,63 @@ let cronometroTreino = null;
 let indiceEdicao = null;
 
 let quantidadeHistoricoVisivel = 10;
+
+function limparFormularioExercicio() {
+
+    indiceEdicao = null;
+
+    document.getElementById(
+        "nomeExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "seriesExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "repeticoesExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "cargaExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "descansoExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "gifExercicio"
+    ).value = "";
+
+    document.getElementById(
+        "videoExercicio"
+    ).value = "";
+
+    formularioExercicio.classList.add(
+        "oculto"
+    );
+
+    btnMostrarFormulario.disabled = false;
+
+    conteudoGerenciarTreinos.classList.add(
+        "oculto"
+    );
+
+    btnAbrirGerenciarTreinos.textContent =
+        "⚙️ Gerenciar Treinos ⌄";
+
+    document.querySelector(
+        "#formularioExercicio h3"
+    ).textContent =
+        "Novo Exercício";
+
+    document.getElementById(
+        "btnSalvarExercicio"
+    ).textContent =
+        "Salvar Exercício";
+
+}
 
 criarBotoesTreinos();
 
