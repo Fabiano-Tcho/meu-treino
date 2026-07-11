@@ -441,6 +441,12 @@ function mostrarTreino(titulo, exercicios) {
                 "oculto"
             );
 
+            formularioExercicio.style.display = "block";
+
+            formularioExercicio.classList.add(
+                "formulario-edicao"
+            );
+
             document.querySelector(
                 "#formularioExercicio h3"
             ).textContent =
@@ -3689,6 +3695,12 @@ function limparFormularioExercicio() {
 
     formularioExercicio.classList.add(
         "oculto"
+    );
+
+    formularioExercicio.style.display = "";
+
+    formularioExercicio.classList.remove(
+        "formulario-edicao"
     );
 
     btnMostrarFormulario.disabled = false;
