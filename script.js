@@ -145,7 +145,8 @@ function mostrarTreino(titulo, exercicios) {
 
                 <button
                     class="btn-descanso"
-                    data-indice="${i}">
+                    data-indice="${i}"
+                    ${concluido ? "disabled" : ""}>
                     ⏱ Descanso
                 </button>
             
@@ -278,13 +279,13 @@ function mostrarTreino(titulo, exercicios) {
         "click",
         finalizarTreino
     );
-
+/*
     conteudoTreino.scrollIntoView(
         {
             behavior: "smooth",
             block: "start"
         }
-    );
+    );*/
 
     const botoesDescanso = document.querySelectorAll(".btn-descanso");
     for (let botao of botoesDescanso) {
@@ -295,10 +296,15 @@ function mostrarTreino(titulo, exercicios) {
         
             const cartao = botao.closest(".cartao-exercicio");
             const barra = cartao.querySelector(".barra-progresso");
-            const textoDescanso =
-                cartao.querySelector(".tempo-descanso");
+            const textoDescanso = cartao.querySelector(".tempo-descanso");
 
-            textoDescanso.classList.remove("tempo-alerta");
+            textoDescanso.classList.remove(
+                "tempo-alerta"
+            );
+
+            textoDescanso.classList.remove(
+                "tempo-concluido"
+            );
 
             if (exercicio.cronometro) {
                 clearInterval(exercicio.cronometro)
@@ -324,7 +330,13 @@ function mostrarTreino(titulo, exercicios) {
                 textoDescanso.textContent =
                     "✅ Volte a Treinar!!!";
 
-                textoDescanso.classList.remove("tempo-alerta");
+                textoDescanso.classList.remove(
+                    "tempo-alerta"
+                );
+
+                textoDescanso.classList.add(
+                    "tempo-concluido"
+                );
 
                 return;
 
@@ -558,12 +570,22 @@ function mostrarTreino(titulo, exercicios) {
                     chaveTreinoAtual,
                     JSON.stringify(treinoAtual)
                 );
+
+                treinos[chaveTreinoAtual] =
+                    treinoAtual;
+
+                localStorage.setItem(
+                    "treinos",
+                    JSON.stringify(treinos)
+                );
             }
 
             mostrarTreino(
                 tituloAtual,
                 treinoAtual
             );
+
+            botao.disabled = true;
 
             if (deveIniciarDescanso) {
 
@@ -861,12 +883,20 @@ function finalizarTreino() {
     }
 
     for (let exercicio of treinoAtual) {
-        exercicio.seriesRealizadas = 0;
+    exercicio.seriesRealizadas = 0;
     }
+
+    treinos[chaveTreinoAtual] =
+        treinoAtual;
 
     localStorage.setItem(
         chaveTreinoAtual,
         JSON.stringify(treinoAtual)
+    );
+
+    localStorage.setItem(
+        "treinos",
+        JSON.stringify(treinos)
     );
 
     const fimTreino =
@@ -3001,6 +3031,13 @@ function criarBotoesTreinos() {
                 mostrarTreino(
                     nomeTreino,
                     treinos[nomeTreino]
+                );
+
+                conteudoTreino.scrollIntoView(
+                    {
+                        behavior: "smooth",
+                        block: "start"
+                    }
                 );
             }
         );
