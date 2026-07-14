@@ -142,7 +142,6 @@ button:active {
     border-left: 6px solid #34c759;
     background: #f0fff4;
     opacity: 0.75;
-    transform: scale(0.99);
     transition: all 0.3s ease;
 }
 
@@ -540,4 +539,65 @@ button.treino-atual,
         transform: scale(1);
         opacity: 1;
     }
+}
+
+#btnAbrirGerenciarTreinos {
+    display: block !important;
+
+    width: max-content !important;
+
+    max-width: calc(100% - 20px) !important;
+
+    margin: 16px auto !important;
+
+    padding: 10px 16px !important;
+
+    white-space: nowrap !important;
+
+    line-height: 1.2 !important;
+
+    font-size: 0.95rem !important;
+}
+
+.cartao-exercicio {
+    width: 100%;
+
+    min-width: 0;
+
+    overflow: hidden;
+}
+
+
+.cartao-concluido {
+    transform: none !important;
+}
+
+
+.controle-carga {
+    width: 100%;
+
+    min-width: 0;
+
+    flex-wrap: nowrap;
+
+    justify-content: flex-start;
+}
+
+
+.btn-diminuirCarga,
+.btn-aumentarCarga {
+    flex: 0 0 54px;
+
+    width: 54px !important;
+
+    min-width: 54px !important;
+}
+
+
+.input-carga {
+    flex: 0 1 90px;
+
+    width: 90px;
+
+    min-width: 0;
 }

@@ -3694,6 +3694,8 @@ let inicioTreino = null;
 
 let cronometroTreino = null;
 
+let tempoTreinoPausado = 0;
+
 let indiceEdicao = null;
 
 let quantidadeHistoricoVisivel = 10;
