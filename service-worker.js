@@ -1,5 +1,5 @@
 const CACHE_NAME =
-    "treino-plus-v1-beta-2";
+    "treino-plus-v1-beta-3";
 
 
 const ARQUIVOS_CACHE = [
@@ -14,7 +14,13 @@ const ARQUIVOS_CACHE = [
 
     "./manifest.json",
 
-    "./logo-treino-plus.png"
+    "./logo-treino-plus.png",
+
+    "./icone-treino-plus-192.png",
+
+    "./icone-treino-plus-512.png",
+
+    "./icone-treino-plus-maskable-512.png"
 
 ];
 

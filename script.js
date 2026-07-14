@@ -543,64 +543,137 @@ function mostrarTreino(titulo, exercicios) {
     
     for (let botao of botoesConcluir) {
 
-    botao.addEventListener(
-        "click",
-        function() {
+        botao.addEventListener(
+            "click",
+            function() {
 
-            const indice =
-                Number(botao.dataset.indice);
+                const indice =
+                    Number(
+                        botao.dataset.indice
+                    );
 
-            let deveIniciarDescanso = false;
+                let deveIniciarDescanso = false;
 
-            if (
-                exercicios[indice].seriesRealizadas <
-                exercicios[indice].series
-            ) {
-
-                exercicios[indice].seriesRealizadas++;
 
                 if (
                     exercicios[indice].seriesRealizadas <
                     exercicios[indice].series
                 ) {
-                    deveIniciarDescanso = true;
-                }
 
-                localStorage.setItem(
-                    chaveTreinoAtual,
-                    JSON.stringify(treinoAtual)
-                );
+                    exercicios[indice].seriesRealizadas++;
 
-                treinos[chaveTreinoAtual] =
-                    treinoAtual;
 
-                localStorage.setItem(
-                    "treinos",
-                    JSON.stringify(treinos)
-                );
-            }
+                    if (
+                        exercicios[indice].seriesRealizadas <
+                        exercicios[indice].series
+                    ) {
 
-            mostrarTreino(
-                tituloAtual,
-                treinoAtual
-            );
+                        deveIniciarDescanso = true;
+                    }
 
-            botao.disabled = true;
 
-            if (deveIniciarDescanso) {
+                    treinos[chaveTreinoAtual] =
+                        treinoAtual;
 
-                const botaoDescanso =
-                    document.querySelector(
-                        `.btn-descanso[data-indice="${indice}"]`
+
+                    localStorage.setItem(
+                        chaveTreinoAtual,
+                        JSON.stringify(
+                            treinoAtual
+                        )
                     );
 
-                if (botaoDescanso) {
-                    botaoDescanso.click();
+
+                    localStorage.setItem(
+                        "treinos",
+                        JSON.stringify(
+                            treinos
+                        )
+                    );
+                }
+
+
+                const exercicioConcluido =
+                    exercicios[indice].seriesRealizadas ===
+                    exercicios[indice].series;
+
+
+                mostrarTreino(
+                    tituloAtual,
+                    treinoAtual
+                );
+
+
+                if (
+                    deveIniciarDescanso
+                ) {
+
+                    const botaoDescanso =
+                        document.querySelector(
+                            `.btn-descanso[data-indice="${indice}"]`
+                        );
+
+
+                    if (botaoDescanso) {
+
+                        botaoDescanso.click();
+                    }
+                }
+
+
+                if (
+                    exercicioConcluido
+                ) {
+
+                    requestAnimationFrame(
+                        function() {
+
+                            const cartoesExercicios =
+                                conteudoTreino.querySelectorAll(
+                                    ".cartao-exercicio"
+                                );
+
+
+                            const proximoCartao =
+                                cartoesExercicios[
+                                    indice + 1
+                                ];
+
+
+                            if (proximoCartao) {
+
+                                proximoCartao.scrollIntoView(
+                                    {
+                                        behavior: "smooth",
+                                        block: "start"
+                                    }
+                                );
+
+                            } else {
+
+                                const btnFinalizarTreino =
+                                    document.getElementById(
+                                        "btnFinalizarTreino"
+                                    );
+
+
+                                if (btnFinalizarTreino) {
+
+                                    btnFinalizarTreino.scrollIntoView(
+                                        {
+                                            behavior: "smooth",
+                                            block: "center"
+                                        }
+                                    );
+                                }
+                            }
+
+                        }
+                    );
                 }
             }
-        }
-    );
-}
+        );
+    }
 
     for (let input of inputsCarga) {
 
@@ -986,6 +1059,21 @@ function finalizarTreino() {
             </button>
         </div>            
     `;
+
+    const resumoTreinoFinalizado =
+        conteudoTreino.querySelector(
+                ".resumo-final"
+            );
+
+        if (resumoTreinoFinalizado) {
+
+            resumoTreinoFinalizado.scrollIntoView(
+                {
+                    behavior: "smooth",
+                    block: "start"
+                }
+            );
+        }
 
     const btnVoltarInicio =
         document.getElementById("btnVoltarInicio");
