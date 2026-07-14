@@ -3483,15 +3483,15 @@ btnMostrarFormulario.addEventListener(
 
         limparFormularioExercicio();
 
-        formularioExercicio.classList.remove(
+        conteudoGerenciarTreinos.classList.remove(
             "oculto"
         );
 
-        formularioExercicio.scrollIntoView(
-            {
-                behavior: "smooth",
-                block: "start"
-            }
+        btnAbrirGerenciarTreinos.textContent =
+            "⚙️ Gerenciar Treinos ⌃";
+
+        formularioExercicio.classList.remove(
+            "oculto"
         );
 
     }
@@ -3831,13 +3831,6 @@ function limparFormularioExercicio() {
     );
 
     btnMostrarFormulario.disabled = false;
-
-    conteudoGerenciarTreinos.classList.add(
-        "oculto"
-    );
-
-    btnAbrirGerenciarTreinos.textContent =
-        "⚙️ Gerenciar Treinos ⌄";
 
     document.querySelector(
         "#formularioExercicio h3"

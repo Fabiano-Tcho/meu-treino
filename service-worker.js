@@ -1,5 +1,5 @@
 const CACHE_NAME =
-    "treino-plus-v1-beta-3";
+    "treino-plus-v1-beta-4";
 
 
 const ARQUIVOS_CACHE = [
