@@ -1,7 +1,8 @@
-const CACHE_NAME = "treino-plus-v1-beta";
+const CACHE_NAME =
+    "treino-plus-v1-beta-2";
 
 
-const arquivosCache = [
+const ARQUIVOS_CACHE = [
 
     "./",
 
@@ -31,13 +32,17 @@ self.addEventListener(
                 function(cache) {
 
                     return cache.addAll(
-                        arquivosCache
+                        ARQUIVOS_CACHE
                     );
                 }
             )
         );
+
+
+        self.skipWaiting();
     }
 );
+
 
 self.addEventListener(
     "activate",
@@ -47,21 +52,21 @@ self.addEventListener(
 
             caches.keys()
                 .then(
-                    function(listaCaches) {
+                    function(nomesCaches) {
 
                         return Promise.all(
 
-                            listaCaches.map(
-                                function(cache) {
+                            nomesCaches.map(
+                                function(nomeCache) {
 
                                     if (
-                                        cache !== CACHE_NAME
+                                        nomeCache !==
+                                        CACHE_NAME
                                     ) {
 
                                         return caches.delete(
-                                            cache
+                                            nomeCache
                                         );
-
                                     }
 
                                 }
@@ -69,25 +74,63 @@ self.addEventListener(
                         );
                     }
                 )
+                .then(
+                    function() {
+
+                        return self.clients.claim();
+                    }
+                )
         );
     }
 );
+
 
 self.addEventListener(
     "fetch",
     function(evento) {
 
+        if (
+            evento.request.method !== "GET"
+        ) {
+
+            return;
+        }
+
+
         evento.respondWith(
 
-            caches.match(
+            fetch(
                 evento.request
             )
             .then(
-                function(resposta) {
+                function(respostaRede) {
 
-                    return (
-                        resposta ||
-                        fetch(evento.request)
+                    const copiaResposta =
+                        respostaRede.clone();
+
+
+                    caches.open(
+                        CACHE_NAME
+                    )
+                    .then(
+                        function(cache) {
+
+                            cache.put(
+                                evento.request,
+                                copiaResposta
+                            );
+                        }
+                    );
+
+
+                    return respostaRede;
+                }
+            )
+            .catch(
+                function() {
+
+                    return caches.match(
+                        evento.request
                     );
                 }
             )
